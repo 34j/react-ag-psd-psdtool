@@ -39,14 +39,17 @@
     "test:watch": "vitest --watch --coverage --coverage.include=src",
     "test": "vitest --coverage --coverage.include=src",
     "watch": "npm-run-all --race --parallel *:watch",
-    "update": "npm-check-updates -u"
+    "update": "npm-check-updates -u",
+    "dev": "vite"
   },
   "dependencies": {
     "@rjsf/core": "^6.0.0-beta.10",
     "@rjsf/react-bootstrap": "^6.0.0-beta.10",
     "@rjsf/utils": "^6.0.0-beta.10",
     "@rjsf/validator-ajv8": "^6.0.0-beta.10",
+    "ag-psd": "^28.2.3",
     "ag-psd-psdtool": "^1.1.2",
+    "bootstrap": "^5.3.8",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-code-blocks": "^0.1.6",
@@ -60,6 +63,7 @@
     "@tsconfig/strictest": "2.0.5",
     "@types/node": "22.18.1",
     "@typescript-eslint/eslint-plugin": "8.43.0",
+    "@vitejs/plugin-react": "^5.0.2",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-v8": "3.2.4",
     "eslint": "9.35.0",
@@ -68,6 +72,7 @@
     "semantic-release": "24.2.8",
     "typedoc": "0.28.12",
     "typescript": "5.9.2",
+    "vite": "^7.1.5",
     "vitest": "3.2.4"
   },
   "typedocOptions": {
