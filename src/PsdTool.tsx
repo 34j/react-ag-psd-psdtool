@@ -1,3 +1,4 @@
+import type { IChangeEvent } from '@rjsf/core'
 import type { UiSchema } from '@rjsf/utils'
 import type { Psd } from 'ag-psd'
 import Form from '@rjsf/react-bootstrap'
@@ -23,7 +24,8 @@ const uiSchema: UiSchema = {
 }
 
 function PsdTool() {
-  const [schema, setSchema] = useState<Record<string, unknown> | null>(null)
+  const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
+  const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const [psd, setPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
@@ -57,20 +59,24 @@ function PsdTool() {
         }
         setPsd(currentPsd)
         const schema = getSchema(currentPsd)
-        setSchema(schema)
+        setPsdSchema(schema)
       }
       reader.readAsArrayBuffer(file)
     })
   }, [])
 
-  const onChange = useCallback((e) => {
+  const onChange = useCallback((e: IChangeEvent<Record<string, unknown>, any, any>) => {
     if (!canvas.current) {
       return
     }
     if (!psd) {
       return
     }
-    renderPsd(psd, e.formData, { canvas: canvas.current })
+    const data = Object.fromEntries(Object.entries(e.formData).filter(([key, value]) => {
+      return (value !== psdSchema.properties[key]?.default)
+    }))
+    setPsdData(data)
+    renderPsd(psd, data, { canvas: canvas.current })
   }, [psd])
 
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop })
@@ -84,7 +90,7 @@ function PsdTool() {
         <Row>
           <Col xs={2} className="vh-100">
             <div className="overflow-auto mh-100">
-              <Form schema={schema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
+              <Form schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
             </div>
           </Col>
           <Col className="vh-100">
@@ -104,16 +110,23 @@ function PsdTool() {
               </div>
               <canvas
                 ref={canvas}
-                width={schema?.width || 0}
-                height={schema?.height || 0}
+                width={psdSchema?.width || 0}
+                height={psdSchema?.height || 0}
                 className="mh-100 mw-100"
               />
             </>
           </Col>
           <Col xs={2} className="vh-100">
-            <div className="overflow-auto mh-100">
-              <CodeBlock text={JSON.stringify(schema, null, 2)} language="json" />
-            </div>
+            <Row style={{ height: '50%' }}>
+              <div className="overflow-auto mh-100">
+                <CodeBlock text={JSON.stringify(psdSchema, null, 2)} language="json" />
+              </div>
+            </Row>
+            <Row style={{ height: '50%' }}>
+              <div className="overflow-auto mh-100">
+                <CodeBlock text={JSON.stringify(psdData, null, 2)} language="json" />
+              </div>
+            </Row>
           </Col>
         </Row>
       </Container>
