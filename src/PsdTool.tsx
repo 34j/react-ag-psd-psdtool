@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
+import Row from 'react-bootstrap/esm/Row'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import 'bootstrap'
@@ -80,37 +81,41 @@ function PsdTool() {
         {alertMessage}
       </Alert>
       <Container fluid className="vh-100">
-        <Col xs={2} className="vh-100">
-          <Form schema={schema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
-        </Col>
-        <Col className="vh-100">
-          <>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              <h2>
-                Drag & Drop
-                <Badge bg="secondary">.PSD</Badge>
-              </h2>
-              <p>
-                or click to select
-                <Badge bg="secondary">.PSD</Badge>
-                {' '}
-                file
-              </p>
+        <Row>
+          <Col xs={2} className="vh-100">
+            <div className="overflow-auto mh-100">
+              <Form schema={schema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
             </div>
-            <canvas
-              ref={canvas}
-              width={schema?.width || 0}
-              height={schema?.height || 0}
-              style={{ width: '100%' }}
-            />
-          </>
-        </Col>
-        <Col xs={2} className="vh-100">
-          <div className="overflow-scroll" style={{ maxHeight: '100%' }}>
-            <CodeBlock text={JSON.stringify(schema, null, 2)} language="json" />
-          </div>
-        </Col>
+          </Col>
+          <Col className="vh-100">
+            <>
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <h2>
+                  Drag & Drop
+                  <Badge bg="secondary">.PSD</Badge>
+                </h2>
+                <p>
+                  or click to select
+                  <Badge bg="secondary">.PSD</Badge>
+                  {' '}
+                  file
+                </p>
+              </div>
+              <canvas
+                ref={canvas}
+                width={schema?.width || 0}
+                height={schema?.height || 0}
+                className="mh-100 mw-100"
+              />
+            </>
+          </Col>
+          <Col xs={2} className="vh-100">
+            <div className="overflow-auto mh-100">
+              <CodeBlock text={JSON.stringify(schema, null, 2)} language="json" />
+            </div>
+          </Col>
+        </Row>
       </Container>
     </>
   )

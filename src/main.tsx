@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import PsdTool from './PsdTool.tsx'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './main.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
