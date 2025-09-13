@@ -7,7 +7,8 @@ import { getSchema, renderPsd } from 'ag-psd-psdtool'
 import React, { useCallback, useRef, useState } from 'react'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
+import Alert from 'react-bootstrap/esm/Alert'
+import Badge from 'react-bootstrap/esm/Badge'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import 'bootstrap'
@@ -24,19 +25,33 @@ function PsdTool() {
   const [schema, setSchema] = useState<Record<string, unknown> | null>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const [psd, setPsd] = useState<Psd | null>(null)
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
 
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
-      reader.onabort = () => console.warn('file reading was aborted')
-      reader.onerror = () => console.warn('file reading has failed')
+      reader.onabort = () => {
+        console.warn('file reading was aborted')
+        setAlertMessage('File reading was aborted.')
+        setShowAlert(true)
+      }
+      reader.onerror = () => {
+        console.warn('file reading has failed')
+        setAlertMessage('File reading has failed.')
+        setShowAlert(true)
+      }
       reader.onload = () => {
+        setShowAlert(false)
         const binaryStr = reader.result
         if (!(binaryStr instanceof ArrayBuffer)) {
           return
         }
         const currentPsd = readPsd(binaryStr)
         if (!currentPsd) {
+          console.warn('Failed to read PSD file. Please make sure the file is a valid PSD.')
+          setAlertMessage('Failed to read PSD file. Please make sure the file is a valid PSD.')
+          setShowAlert(true)
           return
         }
         setPsd(currentPsd)
@@ -60,16 +75,28 @@ function PsdTool() {
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop })
 
   return (
-    <Container fluid>
-      <Row>
-        <Col xs={2}>
+    <>
+      <Alert key="danger" variant="danger" show={showAlert}>
+        {alertMessage}
+      </Alert>
+      <Container fluid className="vh-100">
+        <Col xs={2} className="vh-100">
           <Form schema={schema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
         </Col>
-        <Col>
+        <Col className="vh-100">
           <>
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              <p>Drag and drop, or click to select your PSDTool-compatible PSD file</p>
+              <h2>
+                Drag & Drop
+                <Badge bg="secondary">.PSD</Badge>
+              </h2>
+              <p>
+                or click to select
+                <Badge bg="secondary">.PSD</Badge>
+                {' '}
+                file
+              </p>
             </div>
             <canvas
               ref={canvas}
@@ -79,11 +106,13 @@ function PsdTool() {
             />
           </>
         </Col>
-        <Col xs={2}>
-          <CodeBlock text={JSON.stringify(schema, null, 2)} language="json" />
+        <Col xs={2} className="vh-100">
+          <div className="overflow-scroll" style={{ maxHeight: '100%' }}>
+            <CodeBlock text={JSON.stringify(schema, null, 2)} language="json" />
+          </div>
         </Col>
-      </Row>
-    </Container>
+      </Container>
+    </>
   )
 }
 
