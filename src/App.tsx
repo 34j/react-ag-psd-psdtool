@@ -20,7 +20,7 @@ const uiSchema: UiSchema = {
   },
 }
 
-function App() {
+function PsdTool() {
   const [schema, setSchema] = useState<Record<string, unknown> | null>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const [psd, setPsd] = useState<Psd | null>(null)
@@ -31,7 +31,6 @@ function App() {
       reader.onabort = () => console.warn('file reading was aborted')
       reader.onerror = () => console.warn('file reading has failed')
       reader.onload = () => {
-      // Do whatever you want with the file contents
         const binaryStr = reader.result
         if (!(binaryStr instanceof ArrayBuffer)) {
           return
@@ -88,4 +87,4 @@ function App() {
   )
 }
 
-export default App
+export default PsdTool
