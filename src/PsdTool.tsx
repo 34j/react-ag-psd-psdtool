@@ -11,7 +11,7 @@ import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
 import Row from 'react-bootstrap/esm/Row'
-import { CodeBlock } from 'react-code-blocks'
+import { CodeBlock, CopyBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -25,7 +25,9 @@ const uiSchema: UiSchema = {
 
 function PsdTool() {
   const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
-  const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
+  const [psdSchemaJson, setPsdSchemaJson] = useState('')
+  const [_, setPsdData] = useState<Record<string, unknown> | null>(null)
+  const [psdDataJson, setPsdDataJson] = useState('')
   const canvas = useRef<HTMLCanvasElement>(null)
   const [psd, setPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
@@ -60,6 +62,7 @@ function PsdTool() {
         setPsd(currentPsd)
         const schema = getSchema(currentPsd)
         setPsdSchema(schema)
+        setPsdSchemaJson(JSON.stringify(schema, null, 2))
       }
       reader.readAsArrayBuffer(file)
     })
@@ -72,10 +75,14 @@ function PsdTool() {
     if (!psd) {
       return
     }
-    const data = Object.fromEntries(Object.entries(e.formData).filter(([key, value]) => {
-      return (value !== psdSchema.properties[key]?.default)
-    }))
+    const data: Record<string, any> = {}
+    for (const key in e.formData) {
+      if (e.formData[key] !== psdSchema?.properties[key]?.default) {
+        data[key] = e.formData[key]
+      }
+    }
     setPsdData(data)
+    setPsdDataJson(JSON.stringify(data, null, 2))
     renderPsd(psd, data, { canvas: canvas.current })
   }, [psd])
 
@@ -119,12 +126,14 @@ function PsdTool() {
           <Col xs={2} className="vh-100">
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
-                <CodeBlock text={JSON.stringify(psdSchema, null, 2)} language="json" />
+                <h2>PSD Schema</h2>
+                <CodeBlock text={psdSchemaJson} language="json" />
               </div>
             </Row>
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
-                <CodeBlock text={JSON.stringify(psdData, null, 2)} language="json" />
+                <h2>Render Options</h2>
+                <CopyBlock text={psdDataJson} language="json" />
               </div>
             </Row>
           </Col>
