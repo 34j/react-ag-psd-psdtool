@@ -13,6 +13,7 @@ import Badge from 'react-bootstrap/esm/Badge'
 import Row from 'react-bootstrap/esm/Row'
 import { CodeBlock, CopyBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
+import { BsCursor } from 'react-icons/bs'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -102,14 +103,19 @@ function PsdTool() {
           </Col>
           <Col className="vh-100">
             <>
-              <div {...getRootProps()}>
+              <div {...getRootProps()} className="object-fit-contain">
                 <input {...getInputProps()} />
-                <h2>
+                <h2 className="text-center">
                   Drag & Drop
+                  {' '}
                   <Badge bg="secondary">.PSD</Badge>
                 </h2>
-                <p>
-                  or click to select
+                <p className="text-center">
+                  or
+                  {' '}
+                  <BsCursor />
+                  click to select
+                  {' '}
                   <Badge bg="secondary">.PSD</Badge>
                   {' '}
                   file
@@ -127,13 +133,13 @@ function PsdTool() {
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
                 <h2>PSD Schema</h2>
-                <CodeBlock text={psdSchemaJson} language="json" />
+                <CodeBlock text={psdSchemaJson} language="json" showLineNumbers={false} />
               </div>
             </Row>
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
                 <h2>Render Options</h2>
-                <CopyBlock text={psdDataJson} language="json" />
+                <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} />
               </div>
             </Row>
           </Col>
