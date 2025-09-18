@@ -1,7 +1,7 @@
 import type { IChangeEvent } from '@rjsf/core'
 import type { FieldTemplateProps, RegistryWidgetsType, UiSchema, WidgetProps } from '@rjsf/utils'
 import type { Psd } from 'ag-psd'
-import Form from '@rjsf/react-bootstrap'
+import { Form as RJSFForm } from '@rjsf/react-bootstrap'
 import CheckboxWidget from '@rjsf/react-bootstrap/lib/CheckboxWidget/CheckboxWidget.js'
 import FieldTemplate from '@rjsf/react-bootstrap/lib/FieldTemplate/FieldTemplate.js'
 import SelectWidget from '@rjsf/react-bootstrap/lib/SelectWidget/SelectWidget.js'
@@ -15,6 +15,7 @@ import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
 import Row from 'react-bootstrap/esm/Row'
+import { Form } from 'react-bootstrap/Form'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { BsCursor } from 'react-icons/bs'
@@ -92,7 +93,8 @@ const templates = {
   FieldTemplate: CustomFieldTemplate,
 }
 
-function PsdTool() {
+function PsdTool(url?: URL, onLoad?: (schema: Record<string, unknown>) => void, onChange?: (data: Record<string, unknown>) => void) {
+  const [_url, _setUrl] = useState<string>(url?.href || '')
   const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
   const [psdSchemaJson, setPsdSchemaJson] = useState('')
   const [_, setPsdData] = useState<Record<string, unknown> | null>(null)
@@ -102,7 +104,22 @@ function PsdTool() {
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const _onLoad = useCallback((buffer: ArrayBuffer) => {
+    const currentPsd = readPsd(buffer)
+    if (!currentPsd) {
+      console.warn('Failed to read PSD file. Please make sure the file is a valid PSD.')
+      setAlertMessage('Failed to read PSD file. Please make sure the file is a valid PSD.')
+      setShowAlert(true)
+      return
+    }
+    setPsd(currentPsd)
+    const schema = getSchema(currentPsd)
+    onLoad?.(schema)
+    setPsdSchema(schema)
+    setPsdSchemaJson(JSON.stringify(schema, null, 2))
+  }, [])
+
+  const _onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
       reader.onabort = () => {
@@ -121,23 +138,13 @@ function PsdTool() {
         if (!(binaryStr instanceof ArrayBuffer)) {
           return
         }
-        const currentPsd = readPsd(binaryStr)
-        if (!currentPsd) {
-          console.warn('Failed to read PSD file. Please make sure the file is a valid PSD.')
-          setAlertMessage('Failed to read PSD file. Please make sure the file is a valid PSD.')
-          setShowAlert(true)
-          return
-        }
-        setPsd(currentPsd)
-        const schema = getSchema(currentPsd)
-        setPsdSchema(schema)
-        setPsdSchemaJson(JSON.stringify(schema, null, 2))
+        _onLoad(binaryStr)
       }
       reader.readAsArrayBuffer(file)
     })
   }, [])
 
-  const onChange = useCallback((e: IChangeEvent<Record<string, unknown>, any, any>) => {
+  const _onChange = useCallback((e: IChangeEvent<Record<string, unknown>, any, any>) => {
     if (!canvas.current) {
       return
     }
@@ -150,12 +157,34 @@ function PsdTool() {
         data[key] = e.formData[key]
       }
     }
+    onChange?.(data)
     setPsdData(data)
     setPsdDataJson(JSON.stringify(data, null, 2))
     renderPsd(psd, data, { canvas: canvas.current })
   }, [psd])
 
-  const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop })
+  const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
+
+  React.useEffect(() => {
+    if (_url === '') {
+      return
+    }
+    fetch(_url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`)
+        }
+        return response.arrayBuffer()
+      })
+      .then((buffer) => {
+        _onLoad(buffer)
+      })
+      .catch((error) => {
+        console.warn(`Failed to fetch PSD file from ${_url}. Please make sure the URL is correct and the server allows CORS.`, error)
+        setAlertMessage(`Failed to fetch PSD file from ${_url}. Please make sure the URL is correct and the server allows CORS. ${error}`)
+        setShowAlert(true)
+      })
+  }, [_url])
 
   return (
     <>
@@ -166,7 +195,7 @@ function PsdTool() {
         <Row>
           <Col xs={2} className="vh-100">
             <div className="overflow-auto overflow-x-auto mh-100">
-              <Form schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} widgets={widgets} templates={templates} />
+              <RJSFForm schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
             </div>
           </Col>
           <Col className="vh-100">
@@ -189,6 +218,12 @@ function PsdTool() {
                   file
                 </p>
               </div>
+              <Stack direction="horizontal" gap={1} className="justify-content-center">
+                <p>or set URL</p>
+                <Form>
+                  <Form.Control type="url" placeholder="Enter URL" value={_url} />
+                </Form>
+              </Stack>
               <canvas
                 ref={canvas}
                 width={psdSchema?.width || 0}

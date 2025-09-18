@@ -29,13 +29,12 @@ repos:
       - id: trailing-whitespace
   # additional_dependencies won't work for ESM modules
   # https://stackoverflow.com/questions/77253791/how-to-get-new-style-eslint-config-working-with-pre-commit
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.22.0
+  - repo: local
     hooks:
       - id: eslint
-        entry: eslint --fix --no-warn-ignored
-        files: ''
-        types: [file]
+        language: node
+        name: eslint
+        entry: pnpm run lint
   - repo: https://github.com/NixOS/nixfmt
     rev: '3006577'
     hooks:
