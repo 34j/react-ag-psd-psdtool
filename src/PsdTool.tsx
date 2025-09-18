@@ -29,16 +29,8 @@ const uiSchema: UiSchema = {
 }
 
 function CustomCheckboxWidget(props: WidgetProps) {
-  const slashCount = (props.label || '').split('/').length - 1
   const lastName = (props.label || '').split('/').slice(-1)[0]
-  return (
-    <>
-      <Stack direction="horizontal" gap={0}>
-        <span style={{ visibility: 'hidden' }}>{'　'.repeat(slashCount)}</span>
-        <CheckboxWidget {...props} name={lastName} label={lastName} />
-      </Stack>
-    </>
-  )
+  return <CheckboxWidget {...props} name={lastName} label={lastName} />
 }
 
 function CustomSelectWidget(props: WidgetProps) {
@@ -47,13 +39,14 @@ function CustomSelectWidget(props: WidgetProps) {
 }
 
 function CustomFieldTemplate(props: FieldTemplateProps) {
-  const slashCount = (props.label || '').split('/').length - 1
-  const lastName = (props.label || '').split('/').slice(-1)[0]
+  const slashCount = (props.id || '').split('/').length - 1
+  const lastName = (props.id || '').split('/').slice(-1)[0]
+  // disable shrinking
   return (
     <>
       <Stack direction="horizontal" gap={0}>
-        <span style={{ visibility: 'hidden' }}>{'　'.repeat(slashCount)}</span>
-        <FieldTemplate {...props} name={lastName} label={lastName} />
+        <span style={{ visibility: 'hidden', display: 'block', width: `${slashCount * 1.5}em` }} className="flex-shrink-0" />
+        <FieldTemplate {...props} label={lastName} />
       </Stack>
     </>
   )
@@ -143,7 +136,7 @@ function PsdTool() {
       <Container fluid className="vh-100">
         <Row>
           <Col xs={2} className="vh-100">
-            <div className="overflow-auto mh-100">
+            <div className="overflow-auto overflow-x-auto mh-100">
               <Form schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} widgets={widgets} templates={templates} />
             </div>
           </Col>
