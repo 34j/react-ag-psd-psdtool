@@ -1,5 +1,5 @@
 import type { IChangeEvent } from '@rjsf/core'
-import type { RegistryWidgetsType, UiSchema, WidgetProps } from '@rjsf/utils'
+import type { FieldTemplateProps, RegistryWidgetsType, UiSchema, WidgetProps } from '@rjsf/utils'
 import type { Psd } from 'ag-psd'
 import Form from '@rjsf/react-bootstrap'
 import CheckboxWidget from '@rjsf/react-bootstrap/lib/CheckboxWidget/CheckboxWidget.js'
@@ -15,7 +15,7 @@ import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
 import Row from 'react-bootstrap/esm/Row'
-import { CodeBlock, CopyBlock } from 'react-code-blocks'
+import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { BsCursor } from 'react-icons/bs'
 import 'bootstrap'
@@ -28,14 +28,37 @@ const uiSchema: UiSchema = {
   },
 }
 
-function CustomCheckboxWidget(props: WidgetProps) {
-  const lastName = (props.label || '').split('/').slice(-1)[0]
-  return <CheckboxWidget {...props} name={lastName} label={lastName} />
-}
-
 function CustomSelectWidget(props: WidgetProps) {
+  let hasFalse = false
+  for (const option of props.options.enumOptions || []) {
+    if (option.value === false) {
+      hasFalse = true
+      break
+    }
+  }
+  if (!hasFalse) {
+    return <SelectWidget {...props} />
+  }
+  const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
   const lastName = (props.label || '').split('/').slice(-1)[0]
-  return <SelectWidget {...props} name={lastName} label={lastName} />
+  return (
+    <Stack direction="horizontal" gap={1}>
+      <CheckboxWidget
+        {...props}
+        checked={props.value !== false}
+        label=""
+        onChange={(value) => {
+          if (value === false) {
+            props.onChange(false)
+          }
+          else {
+            props.onChange(enumOptions ? [0].value : undefined)
+          }
+        }}
+      />
+      <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} />
+    </Stack>
+  )
 }
 
 function CustomFieldTemplate(props: FieldTemplateProps) {
@@ -55,7 +78,6 @@ function CustomFieldTemplate(props: FieldTemplateProps) {
 // https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
 
 const widgets: RegistryWidgetsType = {
-  CheckboxWidget: CustomCheckboxWidget,
   SelectWidget: CustomSelectWidget,
 }
 
@@ -172,13 +194,13 @@ function PsdTool() {
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
                 <h2>PSD Schema</h2>
-                <CodeBlock text={psdSchemaJson} language="json" showLineNumbers={false} />
+                <CodeBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
               </div>
             </Row>
             <Row style={{ height: '50%' }}>
               <div className="overflow-auto mh-100">
                 <h2>Render Options</h2>
-                <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} />
+                <CodeBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
               </div>
             </Row>
           </Col>
