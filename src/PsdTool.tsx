@@ -69,6 +69,7 @@ function CustomSelectWidget(props: WidgetProps) {
 function CustomFieldTemplate(props: FieldTemplateProps) {
   const slashCount = (props.id || '').split('/').length - 1
   const lastName = (props.id || '').split('/').slice(-1)[0]
+
   // disable shrinking
   return (
     <>
