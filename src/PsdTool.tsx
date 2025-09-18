@@ -28,6 +28,11 @@ const uiSchema: UiSchema = {
   },
 }
 
+function CustomCheckboxWidget(props: WidgetProps) {
+  const lastName = (props.label || '').split('/').slice(-1)[0]
+  return <CheckboxWidget {...props} name={lastName} label={lastName} />
+}
+
 function CustomSelectWidget(props: WidgetProps) {
   let hasFalse = false
   for (const option of props.options.enumOptions || []) {
@@ -78,6 +83,7 @@ function CustomFieldTemplate(props: FieldTemplateProps) {
 // https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
 
 const widgets: RegistryWidgetsType = {
+  CheckboxWidget: CustomCheckboxWidget,
   SelectWidget: CustomSelectWidget,
 }
 
