@@ -93,8 +93,14 @@ const templates = {
   FieldTemplate: CustomFieldTemplate,
 }
 
-function PsdTool(url?: URL, onLoad?: (schema: Record<string, unknown>) => void, onChange?: (data: Record<string, unknown>) => void) {
-  const [_url, _setUrl] = useState<string>(url?.href || '')
+interface PsdToolProps {
+  url?: string
+  onLoad?: (schema: Record<string, unknown>) => void
+  onChange?: (data: Record<string, unknown>) => void
+}
+
+function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
+  const [_url, _setUrl] = useState<string>(url || '')
   const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
   const [psdSchemaJson, setPsdSchemaJson] = useState('')
   const [_, setPsdData] = useState<Record<string, unknown> | null>(null)
