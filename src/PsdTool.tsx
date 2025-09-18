@@ -51,12 +51,12 @@ function CustomSelectWidget(props: WidgetProps) {
           if (value === false) {
             props.onChange(false)
           }
-          else {
-            props.onChange(enumOptions ? [0].value : undefined)
+          else if (enumOptions && enumOptions.length > 0) {
+            props.onChange(enumOptions[0].value)
           }
         }}
       />
-      <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} />
+      <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={props.value === false} />
     </Stack>
   )
 }
