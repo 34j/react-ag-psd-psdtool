@@ -1,11 +1,15 @@
 import type { IChangeEvent } from '@rjsf/core'
-import type { UiSchema } from '@rjsf/utils'
+import type { RegistryWidgetsType, UiSchema, WidgetProps } from '@rjsf/utils'
 import type { Psd } from 'ag-psd'
 import Form from '@rjsf/react-bootstrap'
+import CheckboxWidget from '@rjsf/react-bootstrap/lib/CheckboxWidget/CheckboxWidget.js'
+import FieldTemplate from '@rjsf/react-bootstrap/lib/FieldTemplate/FieldTemplate.js'
+import SelectWidget from '@rjsf/react-bootstrap/lib/SelectWidget/SelectWidget.js'
 import validator from '@rjsf/validator-ajv8'
 import { readPsd } from 'ag-psd'
 import { getSchema, renderPsd } from 'ag-psd-psdtool'
 import React, { useCallback, useRef, useState } from 'react'
+import { Stack } from 'react-bootstrap'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
@@ -22,6 +26,48 @@ const uiSchema: UiSchema = {
   'ui:submitButtonOptions': {
     norender: true,
   },
+}
+
+function CustomCheckboxWidget(props: WidgetProps) {
+  const slashCount = (props.label || '').split('/').length - 1
+  const lastName = (props.label || '').split('/').slice(-1)[0]
+  return (
+    <>
+      <Stack direction="horizontal" gap={0}>
+        <span style={{ visibility: 'hidden' }}>{'　'.repeat(slashCount)}</span>
+        <CheckboxWidget {...props} name={lastName} label={lastName} />
+      </Stack>
+    </>
+  )
+}
+
+function CustomSelectWidget(props: WidgetProps) {
+  const lastName = (props.label || '').split('/').slice(-1)[0]
+  return <SelectWidget {...props} name={lastName} label={lastName} />
+}
+
+function CustomFieldTemplate(props: FieldTemplateProps) {
+  const slashCount = (props.label || '').split('/').length - 1
+  const lastName = (props.label || '').split('/').slice(-1)[0]
+  return (
+    <>
+      <Stack direction="horizontal" gap={0}>
+        <span style={{ visibility: 'hidden' }}>{'　'.repeat(slashCount)}</span>
+        <FieldTemplate {...props} name={lastName} label={lastName} />
+      </Stack>
+    </>
+  )
+}
+
+// https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
+
+const widgets: RegistryWidgetsType = {
+  CheckboxWidget: CustomCheckboxWidget,
+  SelectWidget: CustomSelectWidget,
+}
+
+const templates = {
+  FieldTemplate: CustomFieldTemplate,
 }
 
 function PsdTool() {
@@ -98,7 +144,7 @@ function PsdTool() {
         <Row>
           <Col xs={2} className="vh-100">
             <div className="overflow-auto mh-100">
-              <Form schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} />
+              <Form schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={onChange} widgets={widgets} templates={templates} />
             </div>
           </Col>
           <Col className="vh-100">
