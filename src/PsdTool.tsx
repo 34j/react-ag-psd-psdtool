@@ -15,7 +15,7 @@ import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
 import Row from 'react-bootstrap/esm/Row'
-import { Form } from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/Form'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { BsCursor } from 'react-icons/bs'
@@ -227,7 +227,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               <Stack direction="horizontal" gap={1} className="justify-content-center">
                 <p>or set URL</p>
                 <Form>
-                  <Form.Control type="url" placeholder="Enter URL" value={_url} />
+                  <Form.Control type="url" placeholder="Enter URL" value={_url} onChange={e => _setUrl(e.target.value)} />
                 </Form>
               </Stack>
               <canvas
