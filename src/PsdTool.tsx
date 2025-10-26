@@ -30,11 +30,14 @@ const uiSchema: UiSchema = {
 }
 
 function CustomCheckboxWidget(props: WidgetProps) {
-  const lastName = (props.label || '').split('/').slice(-1)[0]
+  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
   return <CheckboxWidget {...props} name={lastName} label={lastName} />
 }
 
 function CustomSelectWidget(props: WidgetProps) {
+  if (!props.options.enumOptions) {
+    return <SelectWidget {...props} />
+  }
   let hasFalse = false
   for (const option of props.options.enumOptions || []) {
     if (option.value === false) {
@@ -46,7 +49,7 @@ function CustomSelectWidget(props: WidgetProps) {
     return <SelectWidget {...props} />
   }
   const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-  const lastName = (props.label || '').split('/').slice(-1)[0]
+  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
   return (
     <Stack direction="horizontal" gap={1}>
       <CheckboxWidget
@@ -58,7 +61,7 @@ function CustomSelectWidget(props: WidgetProps) {
             props.onChange(false)
           }
           else if (enumOptions && enumOptions.length > 0) {
-            props.onChange(enumOptions[0].value)
+            props.onChange(enumOptions[0]?.value)
           }
         }}
       />
@@ -69,7 +72,7 @@ function CustomSelectWidget(props: WidgetProps) {
 
 function CustomFieldTemplate(props: FieldTemplateProps) {
   const slashCount = (props.id || '').split('/').length - 1
-  const lastName = (props.id || '').split('/').slice(-1)[0]
+  const lastName = (props.id || '').split('/').slice(-1)[0] || ''
 
   // disable shrinking
   return (
@@ -159,7 +162,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     }
     const data: Record<string, any> = {}
     for (const key in e.formData) {
-      if (e.formData[key] !== psdSchema?.properties[key]?.default) {
+      if (e.formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
         data[key] = e.formData[key]
       }
     }
@@ -227,13 +230,19 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               <Stack direction="horizontal" gap={1} className="justify-content-center">
                 <p>or set URL</p>
                 <Form>
-                  <Form.Control type="url" placeholder="Enter URL" value={_url} onChange={e => _setUrl(e.target.value)} />
+                  <Form.Control
+                  /* @ts-expect-error e.target.value */
+                    type="url"
+                    placeholder="Enter URL"
+                    value={_url}
+                    onChange={e => _setUrl(e.target.value)}
+                  />
                 </Form>
               </Stack>
               <canvas
                 ref={canvas}
-                width={psdSchema?.width || 0}
-                height={psdSchema?.height || 0}
+                width={psdSchema?.width as number || 0}
+                height={psdSchema?.height as number || 0}
                 className="mh-100 mw-100"
               />
             </>

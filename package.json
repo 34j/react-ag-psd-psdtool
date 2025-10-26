@@ -2,7 +2,7 @@
   "name": "react-ag-psd-psdtool",
   "type": "commonjs",
   "version": "1.0.1",
-  "description": "Minimalistic npm package template with 📦🚀semantic-release + Commitizen, CodeCov, Renovate, pre-commit + EsLint (✗🐶Husky + Lint Staged), ⚡️Vitest (✗👢Jest), 📖TypeDoc + Github Pages support. Note that this is a generated sample package.",
+  "description": "PSDTool-like React component using ag-psd-psdtool",
   "author": {
     "name": "34j"
   },
@@ -40,7 +40,8 @@
     "test": "vitest --coverage --coverage.include=src",
     "watch": "npm-run-all --race --parallel *:watch",
     "update": "npm-check-updates -u",
-    "dev": "vite"
+    "dev": "vite",
+    "build:vite": "vite build"
   },
   "dependencies": {
     "@rjsf/core": "6.0.0-beta.17",
@@ -83,7 +84,8 @@
       "src"
     ],
     "tsconfig": "tsconfig.json",
-    "headings": false
+    "headings": false,
+    "basePath": "./"
   },
   "release": {
     "plugins": [
