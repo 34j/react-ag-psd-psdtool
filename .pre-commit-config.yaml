@@ -6,6 +6,7 @@ default_stages: [pre-commit]
 ci:
   autofix_commit_msg: 'chore(pre-commit.ci): auto fixes'
   autoupdate_commit_msg: 'chore(pre-commit.ci): pre-commit autoupdate'
+  skip: [nixfmt]
 
 repos:
   - repo: https://github.com/commitizen-tools/commitizen
@@ -29,12 +30,13 @@ repos:
       - id: trailing-whitespace
   # additional_dependencies won't work for ESM modules
   # https://stackoverflow.com/questions/77253791/how-to-get-new-style-eslint-config-working-with-pre-commit
-  - repo: local
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.22.0
     hooks:
       - id: eslint
-        language: node
-        name: eslint
-        entry: pnpm run lint
+        entry: eslint --fix --no-warn-ignored
+        files: ''
+        types: [file]
   - repo: https://github.com/NixOS/nixfmt
     rev: '3006577'
     hooks:
