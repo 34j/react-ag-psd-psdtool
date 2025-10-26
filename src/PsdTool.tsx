@@ -162,6 +162,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     }
     const data: Record<string, any> = {}
     for (const key in e.formData) {
+      // @ts-expect-error psdSchema?.properties
       if (e.formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
         data[key] = e.formData[key]
       }
@@ -231,7 +232,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                 <p>or set URL</p>
                 <Form>
                   <Form.Control
-                  /* @ts-expect-error e.target.value */
                     type="url"
                     placeholder="Enter URL"
                     value={_url}
@@ -241,7 +241,9 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Stack>
               <canvas
                 ref={canvas}
+                // @ts-expect-error psdSchema?.width
                 width={psdSchema?.width as number || 0}
+                // @ts-expect-error psdSchema?.height
                 height={psdSchema?.height as number || 0}
                 className="mh-100 mw-100"
               />
