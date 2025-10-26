@@ -34,14 +34,13 @@
     "preinstall": "npx only-allow pnpm",
     "build": "tsc --project tsconfig.json",
     "lint": "eslint --fix",
-    "typedoc": "typedoc",
+    "typedoc": "vite build && typedoc",
     "typedoc:watch": "typedoc --watch",
     "test:watch": "vitest --watch --coverage --coverage.include=src",
     "test": "vitest --coverage --coverage.include=src",
     "watch": "npm-run-all --race --parallel *:watch",
     "update": "npm-check-updates -u",
-    "dev": "vite",
-    "build:vite": "vite build"
+    "dev": "vite"
   },
   "dependencies": {
     "@rjsf/core": "6.0.0-beta.17",
@@ -85,7 +84,13 @@
     ],
     "tsconfig": "tsconfig.json",
     "headings": false,
-    "basePath": "./"
+    "basePath": "./docs",
+    "outputs": [
+      {
+        "name": "html",
+        "path": "./docs/docs"
+      }
+    ]
   },
   "release": {
     "plugins": [
