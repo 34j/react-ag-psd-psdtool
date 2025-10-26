@@ -1,2 +1,3 @@
 onlyBuiltDependencies:
+  - ag-psd-psdtool
   - msw

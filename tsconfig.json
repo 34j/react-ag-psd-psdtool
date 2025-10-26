@@ -2,10 +2,13 @@
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "target": "ES2016",
-    "lib": ["ESNext"],
+    "jsx": "react-jsx",
+    "lib": ["dom", "ESNext"],
     "baseUrl": "src",
     "module": "CommonJS",
+    "allowImportingTsExtensions": true,
     "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "dist"
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]

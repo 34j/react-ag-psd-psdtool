@@ -2,7 +2,7 @@
   "name": "react-ag-psd-psdtool",
   "type": "commonjs",
   "version": "1.0.1",
-  "description": "Minimalistic npm package template with 📦🚀semantic-release + Commitizen, CodeCov, Renovate, pre-commit + EsLint (✗🐶Husky + Lint Staged), ⚡️Vitest (✗👢Jest), 📖TypeDoc + Github Pages support. Note that this is a generated sample package.",
+  "description": "PSDTool-like React component using ag-psd-psdtool",
   "author": {
     "name": "34j"
   },
@@ -34,12 +34,28 @@
     "preinstall": "npx only-allow pnpm",
     "build": "tsc --project tsconfig.json",
     "lint": "eslint --fix",
-    "typedoc": "typedoc",
+    "typedoc": "vite build && typedoc",
     "typedoc:watch": "typedoc --watch",
     "test:watch": "vitest --watch --coverage --coverage.include=src",
     "test": "vitest --coverage --coverage.include=src",
     "watch": "npm-run-all --race --parallel *:watch",
-    "update": "npm-check-updates -u"
+    "update": "npm-check-updates -u",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@rjsf/core": "6.0.0-beta.17",
+    "@rjsf/react-bootstrap": "6.0.0-beta.10",
+    "@rjsf/utils": "6.0.0-beta.17",
+    "@rjsf/validator-ajv8": "6.0.0-beta.17",
+    "ag-psd": "^28.3.1",
+    "ag-psd-psdtool": "^1.1.2",
+    "bootstrap": "^5.3.8",
+    "react": "^19.1.1",
+    "react-bootstrap": "^2.10.10",
+    "react-code-blocks": "^0.1.6",
+    "react-dom": "^19.1.1",
+    "react-dropzone": "^14.3.8",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "5.3.0",
@@ -47,7 +63,10 @@
     "@semantic-release/git": "10.0.1",
     "@tsconfig/strictest": "2.0.5",
     "@types/node": "22.18.1",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
     "@typescript-eslint/eslint-plugin": "8.43.0",
+    "@vitejs/plugin-react": "^5.0.3",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-v8": "3.2.4",
     "eslint": "9.35.0",
@@ -56,6 +75,7 @@
     "semantic-release": "24.2.8",
     "typedoc": "0.28.12",
     "typescript": "5.9.2",
+    "vite": "^7.1.6",
     "vitest": "3.2.4"
   },
   "typedocOptions": {
@@ -63,7 +83,14 @@
       "src"
     ],
     "tsconfig": "tsconfig.json",
-    "headings": false
+    "headings": false,
+    "basePath": "./docs",
+    "outputs": [
+      {
+        "name": "html",
+        "path": "./docs/docs"
+      }
+    ]
   },
   "release": {
     "plugins": [
