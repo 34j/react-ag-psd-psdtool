@@ -6,7 +6,10 @@ default_stages: [pre-commit]
 ci:
   autofix_commit_msg: 'chore(pre-commit.ci): auto fixes'
   autoupdate_commit_msg: 'chore(pre-commit.ci): pre-commit autoupdate'
-  skip: [nixfmt]
+  skip:
+    # https://github.com/sritchie/eslint-repro
+    - eslint
+    # - nixfmt
 
 repos:
   - repo: https://github.com/commitizen-tools/commitizen
@@ -37,10 +40,10 @@ repos:
         entry: eslint --fix --no-warn-ignored
         files: ''
         types: [file]
-  - repo: https://github.com/NixOS/nixfmt
-    rev: v1.1.0
-    hooks:
-      - id: nixfmt
+  # - repo: https://github.com/NixOS/nixfmt
+  #   rev: v1.1.0
+  #   hooks:
+  #     - id: nixfmt
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
