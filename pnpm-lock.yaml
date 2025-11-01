@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@rjsf/core':
-        specifier: 6.0.0-beta.23
-        version: 6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react@19.2.0)
+        specifier: 6.0.1
+        version: 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)
       '@rjsf/react-bootstrap':
-        specifier: 6.0.0-beta.10
-        version: 6.0.0-beta.10(@rjsf/core@6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        specifier: 6.0.1
+        version: 6.0.1(@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@rjsf/utils':
-        specifier: 6.0.0-beta.23
-        version: 6.0.0-beta.23(react@19.2.0)
+        specifier: 6.0.1
+        version: 6.0.1(react@19.2.0)
       '@rjsf/validator-ajv8':
-        specifier: 6.0.0-beta.23
-        version: 6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))
+        specifier: 6.0.1
+        version: 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))
       ag-psd:
         specifier: ^28.4.1
         version: 28.4.1
@@ -731,33 +731,33 @@ packages:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
 
-  '@rjsf/core@6.0.0-beta.23':
-    resolution: {integrity: sha512-t6oE7U64s1w8WWkRXs5A+mZ1zcbFfwof7F+mB1Kl/AyQAdbeOVsz2DYJ5DuroUtE5NrWP1swEshAHBkQJSxaKw==}
+  '@rjsf/core@6.0.1':
+    resolution: {integrity: sha512-+S2nlt0J4FRWLhB9Gn0lAt1qoRjDiRlosNl2d9ofhQtBAjrZP4pn52uErT0B0RMDRqw4X/ICMfi/lmj29Ascww==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.0.0-beta.23
+      '@rjsf/utils': ^6.x
       react: '>=18'
 
-  '@rjsf/react-bootstrap@6.0.0-beta.10':
-    resolution: {integrity: sha512-VG48HDiwOcMk8uzvN0FRMmw4gm04DOYx/WK/OEIZKmEqM6pCJdGEm/4do8la64ivDr7Nb1EJ1Zzwbkk6kyG3dQ==}
+  '@rjsf/react-bootstrap@6.0.1':
+    resolution: {integrity: sha512-mqfMeKCuK5e8OsxEvAS3raFA7WtRUa9foWEYdPJNycJGL0wRcJQvaLor/x2a3w5qfK9GG5eBV+u9P1TqQrlwJQ==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/core': ^6.0.0-beta
-      '@rjsf/utils': ^6.0.0-beta
+      '@rjsf/core': ^6.x
+      '@rjsf/utils': ^6.x
       react: '>=18'
       react-bootstrap: ^2.x
 
-  '@rjsf/utils@6.0.0-beta.23':
-    resolution: {integrity: sha512-C3xfi6NJPA83viYaQY4YXurOV0VXVfhgjGH4O0lnF5JPzh1k81E2tPcYHvdaH1LHhWQoZzXONocnpHL37CfU9A==}
+  '@rjsf/utils@6.0.1':
+    resolution: {integrity: sha512-ystv5I87MmwjD5oybbHivMbULcpNp5jDQyB76rYv7G+Aqs/OdPJydtr2sm/40JkCAvXUgX+7eBZOKmUFk8A3lA==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
 
-  '@rjsf/validator-ajv8@6.0.0-beta.23':
-    resolution: {integrity: sha512-Rtjm+ZZiPfYHCV7dPEGcWrBqXaxH6J1LLfWToIYOyM95+zaFcffUises6epsXOMFXq8AC7RWKjhUiadjSOk5HA==}
+  '@rjsf/validator-ajv8@6.0.1':
+    resolution: {integrity: sha512-4ccK+vjHnVTDQVqQAXkkGQQp50xUC7Mj0xre4+VnhquDDU80KC/Uru8eKNsIYk0rkj5KxkpxHEP3Y8ZrTXyDpg==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.0.0-beta.23
+      '@rjsf/utils': ^6.x
 
   '@rolldown/pluginutils@1.0.0-beta.43':
     resolution: {integrity: sha512-5Uxg7fQUCmfhax7FJke2+8B6cqgeUJUD9o2uXIKXhD+mG0mL6NObmVoi9wXEU1tY89mZKgAYA6fTbftx3q2ZPQ==}
@@ -2416,11 +2416,14 @@ packages:
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
 
-  markdown-to-jsx@7.7.13:
-    resolution: {integrity: sha512-DiueEq2bttFcSxUs85GJcQVrOr0+VVsPfj9AEUPqmExJ3f8P/iQNvZHltV4tm1XVhu1kl0vWBZWT3l99izRMaA==}
+  markdown-to-jsx@8.0.0:
+    resolution: {integrity: sha512-hWEaRxeCDjes1CVUQqU+Ov0mCqBqkGhLKjL98KdbwHSgEWZZSJQeGlJQatVfeZ3RaxrfTrZZ3eczl2dhp5c/pA==}
     engines: {node: '>= 10'}
     peerDependencies:
       react: '>= 0.14.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   marked-terminal@7.3.0:
     resolution: {integrity: sha512-t4rBvPsHc57uE/2nJOLmMbZCQ4tgAccAED3ngXQqW6g+TxA488JzJ+FK3lQkzBQOI1mRV/r/Kq+1ZlJ4D0owQw==}
@@ -4397,24 +4400,24 @@ snapshots:
       uncontrollable: 8.0.4(react@19.2.0)
       warning: 4.0.3
 
-  '@rjsf/core@6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react@19.2.0)':
+  '@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@rjsf/utils': 6.0.0-beta.23(react@19.2.0)
+      '@rjsf/utils': 6.0.1(react@19.2.0)
       lodash: 4.17.21
       lodash-es: 4.17.21
-      markdown-to-jsx: 7.7.13(react@19.2.0)
+      markdown-to-jsx: 8.0.0(react@19.2.0)
       prop-types: 15.8.1
       react: 19.2.0
 
-  '@rjsf/react-bootstrap@6.0.0-beta.10(@rjsf/core@6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+  '@rjsf/react-bootstrap@6.0.1(@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@react-icons/all-files': 4.1.0(react@19.2.0)
-      '@rjsf/core': 6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))(react@19.2.0)
-      '@rjsf/utils': 6.0.0-beta.23(react@19.2.0)
+      '@rjsf/core': 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)
+      '@rjsf/utils': 6.0.1(react@19.2.0)
       react: 19.2.0
       react-bootstrap: 2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  '@rjsf/utils@6.0.0-beta.23(react@19.2.0)':
+  '@rjsf/utils@6.0.1(react@19.2.0)':
     dependencies:
       fast-uri: 3.1.0
       json-schema-merge-allof: 0.8.1
@@ -4424,9 +4427,9 @@ snapshots:
       react: 19.2.0
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.0.0-beta.23(@rjsf/utils@6.0.0-beta.23(react@19.2.0))':
+  '@rjsf/validator-ajv8@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))':
     dependencies:
-      '@rjsf/utils': 6.0.0-beta.23(react@19.2.0)
+      '@rjsf/utils': 6.0.1(react@19.2.0)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       lodash: 4.17.21
@@ -6222,8 +6225,8 @@ snapshots:
 
   markdown-table@3.0.4: {}
 
-  markdown-to-jsx@7.7.13(react@19.2.0):
-    dependencies:
+  markdown-to-jsx@8.0.0(react@19.2.0):
+    optionalDependencies:
       react: 19.2.0
 
   marked-terminal@7.3.0(marked@15.0.12):
