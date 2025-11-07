@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@rjsf/core':
-        specifier: 6.0.1
-        version: 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)
+        specifier: 6.0.2
+        version: 6.0.2(@rjsf/utils@6.0.2(react@19.2.0))(react@19.2.0)
       '@rjsf/react-bootstrap':
-        specifier: 6.0.1
-        version: 6.0.1(@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        specifier: 6.0.2
+        version: 6.0.2(@rjsf/core@6.0.2(@rjsf/utils@6.0.2(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.2(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@rjsf/utils':
-        specifier: 6.0.1
-        version: 6.0.1(react@19.2.0)
+        specifier: 6.0.2
+        version: 6.0.2(react@19.2.0)
       '@rjsf/validator-ajv8':
-        specifier: 6.0.1
-        version: 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))
+        specifier: 6.0.2
+        version: 6.0.2(@rjsf/utils@6.0.2(react@19.2.0))
       ag-psd:
         specifier: ^28.4.1
         version: 28.4.1
@@ -744,15 +744,15 @@ packages:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
 
-  '@rjsf/core@6.0.1':
-    resolution: {integrity: sha512-+S2nlt0J4FRWLhB9Gn0lAt1qoRjDiRlosNl2d9ofhQtBAjrZP4pn52uErT0B0RMDRqw4X/ICMfi/lmj29Ascww==}
+  '@rjsf/core@6.0.2':
+    resolution: {integrity: sha512-oa3WfhKf20alvHfZaF+WNONwtHtyL6DlUjhDsfoX3OeGQGD9Rq5Ps7WAg+mrJyl8XY/RDEVZNegCN4rX4FngIQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/utils': ^6.x
       react: '>=18'
 
-  '@rjsf/react-bootstrap@6.0.1':
-    resolution: {integrity: sha512-mqfMeKCuK5e8OsxEvAS3raFA7WtRUa9foWEYdPJNycJGL0wRcJQvaLor/x2a3w5qfK9GG5eBV+u9P1TqQrlwJQ==}
+  '@rjsf/react-bootstrap@6.0.2':
+    resolution: {integrity: sha512-HxtfV/QwTTrmUmu/ydU0Q9GxR1aRiDg3BRLpBcxg9XNvWTaynbApvb3cYg8wmfiQlDmzo9kKo4Ln+0dEdEpVlg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/core': ^6.x
@@ -760,14 +760,14 @@ packages:
       react: '>=18'
       react-bootstrap: ^2.x
 
-  '@rjsf/utils@6.0.1':
-    resolution: {integrity: sha512-ystv5I87MmwjD5oybbHivMbULcpNp5jDQyB76rYv7G+Aqs/OdPJydtr2sm/40JkCAvXUgX+7eBZOKmUFk8A3lA==}
+  '@rjsf/utils@6.0.2':
+    resolution: {integrity: sha512-GpV1gxahgsGprE5KBkuKr9IIiB2B8CZZ03o1sEdisojGE3ZKTBPKbOsxJmLNBvd6jjzIz4vuCiDH2PD5FGwXhQ==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
 
-  '@rjsf/validator-ajv8@6.0.1':
-    resolution: {integrity: sha512-4ccK+vjHnVTDQVqQAXkkGQQp50xUC7Mj0xre4+VnhquDDU80KC/Uru8eKNsIYk0rkj5KxkpxHEP3Y8ZrTXyDpg==}
+  '@rjsf/validator-ajv8@6.0.2':
+    resolution: {integrity: sha512-VrL+6mzYSlu1Dg8p9A/jt5ukFYQ9/MXmYMKFSqf76cdE1KpOYU3sEGdUIvmmi9cJoEvS2ZAfZU8SM3yqZxVrJg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/utils': ^6.x
@@ -2448,9 +2448,6 @@ packages:
 
   lunr@2.3.9:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
-
-  magic-string@0.30.19:
-    resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -4466,24 +4463,24 @@ snapshots:
       uncontrollable: 8.0.4(react@19.2.0)
       warning: 4.0.3
 
-  '@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)':
+  '@rjsf/core@6.0.2(@rjsf/utils@6.0.2(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@rjsf/utils': 6.0.1(react@19.2.0)
+      '@rjsf/utils': 6.0.2(react@19.2.0)
       lodash: 4.17.21
       lodash-es: 4.17.21
       markdown-to-jsx: 8.0.0(react@19.2.0)
       prop-types: 15.8.1
       react: 19.2.0
 
-  '@rjsf/react-bootstrap@6.0.1(@rjsf/core@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+  '@rjsf/react-bootstrap@6.0.2(@rjsf/core@6.0.2(@rjsf/utils@6.0.2(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.0.2(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@react-icons/all-files': 4.1.0(react@19.2.0)
-      '@rjsf/core': 6.0.1(@rjsf/utils@6.0.1(react@19.2.0))(react@19.2.0)
-      '@rjsf/utils': 6.0.1(react@19.2.0)
+      '@rjsf/core': 6.0.2(@rjsf/utils@6.0.2(react@19.2.0))(react@19.2.0)
+      '@rjsf/utils': 6.0.2(react@19.2.0)
       react: 19.2.0
       react-bootstrap: 2.10.10(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  '@rjsf/utils@6.0.1(react@19.2.0)':
+  '@rjsf/utils@6.0.2(react@19.2.0)':
     dependencies:
       fast-uri: 3.1.0
       json-schema-merge-allof: 0.8.1
@@ -4493,9 +4490,9 @@ snapshots:
       react: 19.2.0
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.0.1(@rjsf/utils@6.0.1(react@19.2.0))':
+  '@rjsf/validator-ajv8@6.0.2(@rjsf/utils@6.0.2(react@19.2.0))':
     dependencies:
-      '@rjsf/utils': 6.0.1(react@19.2.0)
+      '@rjsf/utils': 6.0.2(react@19.2.0)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       lodash: 4.17.21
@@ -5054,7 +5051,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -5067,13 +5064,13 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.13':
     dependencies:
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@vue/compiler-core': 3.5.13
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-ssr': 3.5.13
       '@vue/shared': 3.5.13
       estree-walker: 2.0.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       postcss: 8.5.6
       source-map-js: 1.2.1
 
@@ -6317,10 +6314,6 @@ snapshots:
       yallist: 3.1.1
 
   lunr@2.3.9: {}
-
-  magic-string@0.30.19:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
 
   magic-string@0.30.21:
     dependencies:
