@@ -43,10 +43,10 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@rjsf/core": "6.1.0",
-    "@rjsf/react-bootstrap": "6.1.0",
-    "@rjsf/utils": "6.1.0",
-    "@rjsf/validator-ajv8": "6.1.0",
+    "@rjsf/core": "6.1.1",
+    "@rjsf/react-bootstrap": "6.1.1",
+    "@rjsf/utils": "6.1.1",
+    "@rjsf/validator-ajv8": "6.1.1",
     "ag-psd": "^28.4.1",
     "ag-psd-psdtool": "^1.1.4",
     "bootstrap": "^5.3.8",
