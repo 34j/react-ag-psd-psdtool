@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@rjsf/core':
-        specifier: 6.1.0
-        version: 6.1.0(@rjsf/utils@6.1.0(react@19.2.0))(react@19.2.0)
+        specifier: 6.1.1
+        version: 6.1.1(@rjsf/utils@6.1.1(react@19.2.0))(react@19.2.0)
       '@rjsf/react-bootstrap':
-        specifier: 6.1.0
-        version: 6.1.0(@rjsf/core@6.1.0(@rjsf/utils@6.1.0(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.1.0(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        specifier: 6.1.1
+        version: 6.1.1(@rjsf/core@6.1.1(@rjsf/utils@6.1.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.1.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@rjsf/utils':
-        specifier: 6.1.0
-        version: 6.1.0(react@19.2.0)
+        specifier: 6.1.1
+        version: 6.1.1(react@19.2.0)
       '@rjsf/validator-ajv8':
-        specifier: 6.1.0
-        version: 6.1.0(@rjsf/utils@6.1.0(react@19.2.0))
+        specifier: 6.1.1
+        version: 6.1.1(@rjsf/utils@6.1.1(react@19.2.0))
       ag-psd:
         specifier: ^28.4.1
         version: 28.4.1
@@ -731,15 +731,15 @@ packages:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
 
-  '@rjsf/core@6.1.0':
-    resolution: {integrity: sha512-9H3+BneyKWEPICL1kfRd7OKrwg2+ooR8xskJBnEqaq5p44MGxqQzKORhzWWp8h1yUWJFa4bMutJOcwKJxkKhfw==}
+  '@rjsf/core@6.1.1':
+    resolution: {integrity: sha512-HkaKQJwcLyb7zTRB6H1PFYbStxKrw+53/x/Ho2tNeIiZpw1hm8qvNm5EQEAARFjffdyF/RdDszHtmBOESwT7fQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/utils': ^6.x
       react: '>=18'
 
-  '@rjsf/react-bootstrap@6.1.0':
-    resolution: {integrity: sha512-Yd1vJrVR0WYCuMyCvOizH8Jiwwf1LrHerw9HydQzdP+jQdl4yjPQ4B4JEWpCbqVL4h1reVrTtgkrUF6Hjqu6Vw==}
+  '@rjsf/react-bootstrap@6.1.1':
+    resolution: {integrity: sha512-48mRduKJ9oHnX+xMgJyAep5/8CoBSGhlb6q1y4qyCXcfAjOeHEvBy0cfHRVP+w8gqN4/ykEXxoPJrEgaO6XGUw==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/core': ^6.x
@@ -747,14 +747,14 @@ packages:
       react: '>=18'
       react-bootstrap: ^2.x
 
-  '@rjsf/utils@6.1.0':
-    resolution: {integrity: sha512-IonU7hukF+EnAuNmK3KuJ4DSvydhQH/Z/nuPQW8IhFsQmKGg0/LiJOOKEDS8HD1PDLpr+4J6qkZ+EDupMLHUZQ==}
+  '@rjsf/utils@6.1.1':
+    resolution: {integrity: sha512-608UcT5rgsQLqc2ZVSktjeycdQ8lWmsXtNYshIMdk6VfQ7YTps8rVEvbzBqfaytLrv4xQXsHr+2cIDmYypgXIQ==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
 
-  '@rjsf/validator-ajv8@6.1.0':
-    resolution: {integrity: sha512-L3vzpE97oI20eMJhq8wP9RvtfwmcF4g/61Yh4rvPuQeo9WusWEZU5pG2L+tpM6yCzreZuHhgCjld6lsMrfV2BA==}
+  '@rjsf/validator-ajv8@6.1.1':
+    resolution: {integrity: sha512-I4M8CJxINwNO+SSqg3QTh73r39Xl/sABl9N0k+M8sHpUrAKxeDe+oOG0HSoMrLcGBQHEGD0vwKg10Vzl/wraKA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@rjsf/utils': ^6.x
@@ -4460,24 +4460,24 @@ snapshots:
       uncontrollable: 8.0.4(react@19.2.0)
       warning: 4.0.3
 
-  '@rjsf/core@6.1.0(@rjsf/utils@6.1.0(react@19.2.0))(react@19.2.0)':
+  '@rjsf/core@6.1.1(@rjsf/utils@6.1.1(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@rjsf/utils': 6.1.0(react@19.2.0)
+      '@rjsf/utils': 6.1.1(react@19.2.0)
       lodash: 4.17.21
       lodash-es: 4.17.21
       markdown-to-jsx: 8.0.0(react@19.2.0)
       prop-types: 15.8.1
       react: 19.2.0
 
-  '@rjsf/react-bootstrap@6.1.0(@rjsf/core@6.1.0(@rjsf/utils@6.1.0(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.1.0(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+  '@rjsf/react-bootstrap@6.1.1(@rjsf/core@6.1.1(@rjsf/utils@6.1.1(react@19.2.0))(react@19.2.0))(@rjsf/utils@6.1.1(react@19.2.0))(react-bootstrap@2.10.10(@types/react@19.2.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@react-icons/all-files': 4.1.0(react@19.2.0)
-      '@rjsf/core': 6.1.0(@rjsf/utils@6.1.0(react@19.2.0))(react@19.2.0)
-      '@rjsf/utils': 6.1.0(react@19.2.0)
+      '@rjsf/core': 6.1.1(@rjsf/utils@6.1.1(react@19.2.0))(react@19.2.0)
+      '@rjsf/utils': 6.1.1(react@19.2.0)
       react: 19.2.0
       react-bootstrap: 2.10.10(@types/react@19.2.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  '@rjsf/utils@6.1.0(react@19.2.0)':
+  '@rjsf/utils@6.1.1(react@19.2.0)':
     dependencies:
       fast-uri: 3.1.0
       json-schema-merge-allof: 0.8.1
@@ -4487,9 +4487,9 @@ snapshots:
       react: 19.2.0
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.1.0(@rjsf/utils@6.1.0(react@19.2.0))':
+  '@rjsf/validator-ajv8@6.1.1(@rjsf/utils@6.1.1(react@19.2.0))':
     dependencies:
-      '@rjsf/utils': 6.1.0(react@19.2.0)
+      '@rjsf/utils': 6.1.1(react@19.2.0)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       lodash: 4.17.21
