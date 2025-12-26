@@ -47,7 +47,7 @@
     "@rjsf/react-bootstrap": "6.1.2",
     "@rjsf/utils": "6.1.2",
     "@rjsf/validator-ajv8": "6.1.2",
-    "ag-psd": "^28.4.1",
+    "ag-psd": "^29.0.0",
     "ag-psd-psdtool": "^1.1.4",
     "bootstrap": "^5.3.8",
     "react": "^19.2.0",
