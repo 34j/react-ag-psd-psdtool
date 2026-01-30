@@ -21,8 +21,8 @@ importers:
         specifier: 6.2.5
         version: 6.2.5(@rjsf/utils@6.2.5(react@19.2.0))
       ag-psd:
-        specifier: ^28.4.1
-        version: 28.4.1
+        specifier: ^29.0.0
+        version: 29.1.0
       ag-psd-psdtool:
         specifier: ^1.1.4
         version: 1.1.4
@@ -1274,6 +1274,9 @@ packages:
 
   ag-psd@28.4.1:
     resolution: {integrity: sha512-Cf5xQHScL8VUH2X2jjYbjv6NrZIJ7BkKNw5/FCE8wGv94yLQ4NyfRdvTXB0JJ0qC5IY1s+kVKJbA6JpO2n4hBw==}
+
+  ag-psd@29.1.0:
+    resolution: {integrity: sha512-6crH4JX1mlYQ0C2rmzSmQEDh+P5IooF9trl4n4Gi5SbCbqoTsDSnnTYdxNuY/o+NI/0ItN5KLhUUDlhM4mj7fw==}
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -5081,6 +5084,11 @@ snapshots:
       es-toolkit: 1.39.10
 
   ag-psd@28.4.1:
+    dependencies:
+      base64-js: 1.5.1
+      pako: 2.1.0
+
+  ag-psd@29.1.0:
     dependencies:
       base64-js: 1.5.1
       pako: 2.1.0
