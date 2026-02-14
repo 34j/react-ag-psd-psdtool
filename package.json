@@ -54,7 +54,7 @@
     "react-bootstrap": "^2.10.10",
     "react-code-blocks": "^0.1.6",
     "react-dom": "^19.2.0",
-    "react-dropzone": "^14.3.8",
+    "react-dropzone": "^15.0.0",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
