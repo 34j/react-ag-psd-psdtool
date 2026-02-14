@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.9...v1.1.10) (2026-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-dropzone to v15 ([#133](https://github.com/34j/react-ag-psd-psdtool/issues/133)) ([4289826](https://github.com/34j/react-ag-psd-psdtool/commit/4289826c82241919c118123de0bdc99375e0335f))
+
 ## [1.1.9](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.8...v1.1.9) (2026-01-20)
 
 
