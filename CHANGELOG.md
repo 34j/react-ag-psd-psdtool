@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.10...v1.1.11) (2026-02-16)
+
+
+### Bug Fixes
+
+* **deps:** update rjsf monorepo to v6.3.1 ([#135](https://github.com/34j/react-ag-psd-psdtool/issues/135)) ([7e3347e](https://github.com/34j/react-ag-psd-psdtool/commit/7e3347ede5c9e824edf0ef6522c4d812fbb75c1f))
+
 ## [1.1.10](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.9...v1.1.10) (2026-02-14)
 
 
