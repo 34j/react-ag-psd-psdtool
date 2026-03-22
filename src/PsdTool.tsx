@@ -48,6 +48,9 @@ function CustomSelectWidget(props: WidgetProps) {
   if (!hasFalse) {
     return <SelectWidget {...props} />
   }
+
+  // Add a Checkbox on the left side
+  // if `false` exists in `enumOptions`
   const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
   const lastName = (props.label || '').split('/').slice(-1)[0] || ''
   return (
