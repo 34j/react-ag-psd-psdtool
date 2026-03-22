@@ -1,13 +1,20 @@
-name: Copier Update
+name: Copier
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '3 16 * * *'
 
 jobs:
-  upgrade:
+  update:
+    name: Update
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        update-package-json: [true, false]
     permissions:
       contents: write
       pull-requests: write
@@ -16,21 +23,50 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: '3.14'
-      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
-      - id: copier-update
-        run: uvx copier update --trust --vcs-ref main --exclude src --exclude test --exclude package.json --defaults
-      - id: copier-recopy
-        if: ${{ failure() && steps.copier-update.conclusion == 'failure' }}
-        run: uvx copier recopy --trust --vcs-ref main --exclude src --exclude test --exclude package.json --defaults --overwrite
+      - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7
+      - name: Run copier update
+        run: uvx copier@latest update --trust --vcs-ref main --exclude src --exclude test $([ "${{ matrix['update-package-json'] }}" = "true" ] || echo "--exclude package.json") --defaults || true
+      - name: Accept both changes for all merge conflicts
+        run: |
+          tmp_dir="$(mktemp -d)"
+          trap 'rm -rf "$tmp_dir"' EXIT
+          git diff --name-only --diff-filter=U -z | while IFS= read -r -d '' file; do
+            git show ":1:$file" > "$tmp_dir/base"
+            git show ":2:$file" > "$tmp_dir/ours"
+            git show ":3:$file" > "$tmp_dir/theirs"
+            git merge-file --union "$tmp_dir/ours" "$tmp_dir/base" "$tmp_dir/theirs"
+            cat "$tmp_dir/ours" > "$file"
+          done
+          git add -A
       - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
-        if: ${{ steps.copier-update.conclusion == 'success' }}
         with:
-          branch: chore/copier-update
-          title: 'chore(deps): run `copier update`'
+          branch: chore/copier-auto-update-${{ matrix['update-package-json'] && 'with-package-json' || 'without-package-json' }}
+          title: |
+            chore(deps): run `copier update` ${{ matrix['update-package-json'] && 'with package.json' || 'without package.json' }}
           commit-message: 'chore(deps): run `copier update`'
-      - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
-        if: ${{ failure() && steps.copier-recopy.conclusion == 'success' }}
+          token: ${{ secrets.GH_PAT }}
+
+  recopy:
+    name: Recopy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        update-package-json: [true, false]
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
-          branch: chore/copier-recopy
-          title: 'chore(deps): run `copier recopy`'
+          python-version: '3.14'
+      - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7
+      - name: Run copier recopy
+        run: uvx copier@latest recopy --trust --vcs-ref main --exclude src --exclude test $([ "${{ matrix['update-package-json'] }}" = "true" ] || echo "--exclude package.json") --defaults --overwrite || true
+      - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
+        with:
+          branch: chore/copier-auto-recopy-${{ matrix['update-package-json'] && 'with-package-json' || 'without-package-json' }}
+          title: |
+            chore(deps): run `copier recopy` ${{ matrix['update-package-json'] && 'with package.json' || 'without package.json' }}
           commit-message: 'chore(deps): run `copier recopy`'
+          token: ${{ secrets.GH_PAT }}
