@@ -6,6 +6,9 @@
     "lib": ["dom", "ESNext"],
     "baseUrl": "src",
     "module": "CommonJS",
+    "paths": {
+      "*": ["./src/*"]
+    },
     "allowImportingTsExtensions": true,
     "declaration": true,
     "emitDeclarationOnly": true,
