@@ -1,3 +1,10 @@
+## [1.1.13](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.12...v1.1.13) (2026-03-22)
+
+
+### Bug Fixes
+
+* copier update ([#164](https://github.com/34j/react-ag-psd-psdtool/issues/164)) ([c13ae49](https://github.com/34j/react-ag-psd-psdtool/commit/c13ae49550c503019042590f2be891e3adbb2aef))
+
 ## [1.1.12](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.11...v1.1.12) (2026-03-15)
 
 
