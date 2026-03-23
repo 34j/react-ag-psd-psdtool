@@ -16,7 +16,7 @@
 
 ---
 
-TODO: Project Description.
+PSDTool-like React Component (🔴LIVE Demo : https://34j.github.io/react-ag-psd-psdtool/)
 
 ## Installation
 
@@ -26,11 +26,20 @@ npm install react-ag-psd-psdtool
 
 ## Usage
 
-```ts
-import { myPackage } from 'react-ag-psd-psdtool'
+```tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import psdUrl from './ccchu.psd?url'
+import PsdTool from './PsdTool.tsx'
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './main.css'
 
-myPackage('hello')
-// => 'hello from my package'
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <PsdTool url={psdUrl} />
+  </StrictMode>,
+)
 ```
 
 [build-img]:https://github.com/34j/react-ag-psd-psdtool/actions/workflows/release.yml/badge.svg
