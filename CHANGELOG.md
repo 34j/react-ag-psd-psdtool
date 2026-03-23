@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.13...v1.2.0) (2026-03-23)
+
+
+### Features
+
+* wip ([#172](https://github.com/34j/react-ag-psd-psdtool/issues/172)) ([dbe6acf](https://github.com/34j/react-ag-psd-psdtool/commit/dbe6acf52d82ca42f708ad9ee91d5da41c2b71aa))
+
 ## [1.1.13](https://github.com/34j/react-ag-psd-psdtool/compare/v1.1.12...v1.1.13) (2026-03-22)
 
 
