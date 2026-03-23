@@ -15,6 +15,7 @@ import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/esm/Alert'
 import Badge from 'react-bootstrap/esm/Badge'
+import ProgressBar from 'react-bootstrap/esm/ProgressBar'
 import Row from 'react-bootstrap/esm/Row'
 import Form from 'react-bootstrap/Form'
 import { CodeBlock } from 'react-code-blocks'
@@ -113,7 +114,7 @@ interface PsdToolProps {
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [_url, _setUrl] = useState<string>(url || '')
-  const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema | null>(null)
+  const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
   const [psdSchemaJson, setPsdSchemaJson] = useState('')
   const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const [psdDataJson, setPsdDataJson] = useState('')
@@ -121,40 +122,62 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [loadedPsd, setLoadedPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
+  const [loadingProgress, setLoadingProgress] = useState(0)
 
   // Must be called when new PSD file is loaded
   const _onLoad = useCallback((buffer: ArrayBuffer) => {
-    const currentPsd = readPsd(buffer)
-    if (!currentPsd) {
-      console.warn('Failed to read PSD file. Please make sure the file is a valid PSD.')
-      setAlertMessage('Failed to read PSD file. Please make sure the file is a valid PSD.')
-      setShowAlert(true)
-      return
+    setLoadingProgress(40)
+    try {
+      const currentPsd = readPsd(buffer)
+      setLoadingProgress(70)
+      if (!currentPsd) {
+        console.warn('Failed to read PSD file. Please make sure the file is a valid PSD.')
+        setAlertMessage('Failed to read PSD file. Please make sure the file is a valid PSD.')
+        setShowAlert(true)
+        setLoadingProgress(0)
+        return
+      }
+      setLoadedPsd(currentPsd)
+      const schema = getSchema(currentPsd)
+      setLoadingProgress(80)
+      // Call onLoad callback (any user callback)
+      onLoad?.(schema)
+      setPsdSchema(schema)
+      setPsdSchemaJson(JSON.stringify(schema, null, 2))
+      setPsdData({})
+      setPsdDataJson(JSON.stringify({}, null, 2))
+      setLoadingProgress(90)
+      renderPsd(currentPsd, {}, { canvas: canvas.current })
+      setLoadingProgress(100)
     }
-    setLoadedPsd(currentPsd)
-    const schema = getSchema(currentPsd)
-    // Call onLoad callback (any user callback)
-    onLoad?.(schema)
-    setPsdSchema(schema)
-    setPsdSchemaJson(JSON.stringify(schema, null, 2))
-    setPsdData({})
-    setPsdDataJson(JSON.stringify({}, null, 2))
-    renderPsd(currentPsd, {}, { canvas: canvas.current })
+    finally {
+      setTimeout(setLoadingProgress, 1000, 0)
+    }
   }, [])
 
   // Callback for file drop
   const _onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
+      setLoadingProgress(5)
       reader.onabort = () => {
         console.warn('file reading was aborted')
         setAlertMessage('File reading was aborted.')
+        setLoadingProgress(0)
         setShowAlert(true)
       }
       reader.onerror = () => {
         console.warn('file reading has failed')
         setAlertMessage('File reading has failed.')
+        setLoadingProgress(0)
         setShowAlert(true)
+      }
+      reader.onprogress = (event) => {
+        if (!event.lengthComputable) {
+          return
+        }
+        const percent = Math.min(35, Math.round((event.loaded / event.total) * 35))
+        setLoadingProgress(Math.max(5, percent))
       }
       reader.onload = () => {
         setShowAlert(false)
@@ -220,6 +243,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       <Alert key="danger" variant="danger" show={showAlert}>
         {alertMessage}
       </Alert>
+      {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
       <Container fluid className="vh-100">
         <Row>
           <Col xs={2} className="vh-100">
@@ -238,7 +262,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
 
               )}
               >
-                <RJSFForm schema={psdSchema || {}} formData={psdData} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
+                <RJSFForm schema={psdSchema} formData={psdData} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
               </ErrorBoundary>
             </div>
           </Col>
