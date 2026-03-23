@@ -33,79 +33,6 @@ const uiSchema: UiSchema = {
   },
 }
 
-// https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
-function CustomCheckboxWidget(props: WidgetProps) {
-  // Only show the last part of the label after the last slash
-  // e.g. folderX/layerY -> layerY
-  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
-  return <CheckboxWidget {...props} name={lastName} label={lastName} />
-}
-
-function CustomSelectWidget(props: WidgetProps) {
-  if (!props.options.enumOptions) {
-    return <SelectWidget {...props} />
-  }
-  let hasFalse = false
-  for (const option of props.options.enumOptions || []) {
-    if (option.value === false) {
-      hasFalse = true
-      break
-    }
-  }
-  if (!hasFalse) {
-    return <SelectWidget {...props} />
-  }
-
-  // Add a Checkbox on the left side
-  // if `false` exists in `enumOptions`
-  const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
-  return (
-    <Stack direction="horizontal" gap={1}>
-      <CheckboxWidget
-        {...props}
-        checked={props.value !== false}
-        label=""
-        onChange={(value) => {
-          if (value === false) {
-            props.onChange(false)
-          }
-          else if (enumOptions && enumOptions.length > 0) {
-            props.onChange(enumOptions[0]?.value)
-          }
-        }}
-      />
-      <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={props.value === false} />
-    </Stack>
-  )
-}
-
-function CustomFieldTemplate(props: FieldTemplateProps) {
-  const slashCount = (props.id || '').split('/').length - 1
-  const lastName = (props.id || '').split('/').slice(-1)[0] || ''
-
-  // disable shrinking
-  return (
-    <>
-      <Stack direction="horizontal" gap={0}>
-        <span style={{ visibility: 'hidden', display: 'block', width: `${slashCount * 1.5}em` }} className="flex-shrink-0" />
-        <FieldTemplate {...props} label={lastName} />
-      </Stack>
-    </>
-  )
-}
-
-// https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
-
-const widgets: RegistryWidgetsType = {
-  CheckboxWidget: CustomCheckboxWidget,
-  SelectWidget: CustomSelectWidget,
-}
-
-const templates = {
-  FieldTemplate: CustomFieldTemplate,
-}
-
 interface PsdToolProps {
   url?: string
   onLoad?: (schema: PSDToolJSONSchema) => void
@@ -113,6 +40,79 @@ interface PsdToolProps {
 }
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
+  // https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
+  function CustomCheckboxWidget(props: WidgetProps) {
+    // Only show the last part of the label after the last slash
+    // e.g. folderX/layerY -> layerY
+    const lastName = (props.label || '').split('/').slice(-1)[0] || ''
+    return <CheckboxWidget {...props} name={lastName} label={lastName} />
+  }
+
+  function CustomSelectWidget(props: WidgetProps) {
+    if (!props.options.enumOptions) {
+      return <SelectWidget {...props} />
+    }
+    let hasFalse = false
+    for (const option of props.options.enumOptions || []) {
+      if (option.value === false) {
+        hasFalse = true
+        break
+      }
+    }
+    if (!hasFalse) {
+      return <SelectWidget {...props} />
+    }
+
+    // Add a Checkbox on the left side
+    // if `false` exists in `enumOptions`
+    const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
+    const lastName = (props.label || '').split('/').slice(-1)[0] || ''
+    return (
+      <Stack direction="horizontal" gap={1}>
+        <CheckboxWidget
+          {...props}
+          checked={props.value !== false}
+          label=""
+          onChange={(value) => {
+            if (value === false) {
+              props.onChange(false)
+            }
+            else if (enumOptions && enumOptions.length > 0) {
+              props.onChange(enumOptions[0]?.value)
+            }
+          }}
+        />
+        <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={props.value === false} />
+      </Stack>
+    )
+  }
+
+  function CustomFieldTemplate(props: FieldTemplateProps) {
+    const slashCount = (props.id || '').split('/').length - 1
+    const lastName = (props.id || '').split('/').slice(-1)[0] || ''
+
+    // disable shrinking
+    return (
+      <>
+        <Stack direction="horizontal" gap={0}>
+          <span style={{ visibility: 'hidden', display: 'block', width: `${slashCount * 1.5}em` }} className="flex-shrink-0" />
+          <FieldTemplate {...props} label={lastName} />
+        </Stack>
+      </>
+    )
+  }
+
+  // https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
+
+  const widgets: RegistryWidgetsType = {
+    CheckboxWidget: CustomCheckboxWidget,
+    SelectWidget: CustomSelectWidget,
+  }
+
+  const templates = {
+    FieldTemplate: CustomFieldTemplate,
+  }
+
   const [_url, _setUrl] = useState<string>(url || '')
   const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
   const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
