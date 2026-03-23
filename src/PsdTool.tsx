@@ -1,6 +1,7 @@
 import type { IChangeEvent } from '@rjsf/core'
 import type { FieldTemplateProps, RegistryWidgetsType, UiSchema, WidgetProps } from '@rjsf/utils'
 import type { Psd } from 'ag-psd'
+import type { PSDToolJSONSchema } from 'ag-psd-psdtool'
 import { Form as RJSFForm } from '@rjsf/react-bootstrap'
 import CheckboxWidget from '@rjsf/react-bootstrap/lib/CheckboxWidget/CheckboxWidget.js'
 import FieldTemplate from '@rjsf/react-bootstrap/lib/FieldTemplate/FieldTemplate.js'
@@ -106,18 +107,18 @@ const templates = {
 
 interface PsdToolProps {
   url?: string
-  onLoad?: (schema: Record<string, unknown>) => void
+  onLoad?: (schema: PSDToolJSONSchema) => void
   onChange?: (data: Record<string, unknown>) => void
 }
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [_url, _setUrl] = useState<string>(url || '')
-  const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
+  const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema | null>(null)
   const [psdSchemaJson, setPsdSchemaJson] = useState('')
   const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const [psdDataJson, setPsdDataJson] = useState('')
   const canvas = useRef<HTMLCanvasElement>(null)
-  const [psd, setPsd] = useState<Psd | null>(null)
+  const [loadedPsd, setLoadedPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
@@ -130,7 +131,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       setShowAlert(true)
       return
     }
-    setPsd(currentPsd)
+    setLoadedPsd(currentPsd)
     const schema = getSchema(currentPsd)
     // Call onLoad callback (any user callback)
     onLoad?.(schema)
@@ -172,7 +173,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     if (!canvas.current) {
       return
     }
-    if (!psd) {
+    if (!loadedPsd) {
       return
     }
     // To minimize the size of data,
@@ -180,7 +181,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     // the default value in `psdSchema`
     const data: Record<string, any> = {}
     for (const key in e.formData) {
-      // @ts-expect-error psdSchema?.properties
       if (e.formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
         data[key] = e.formData[key]
       }
@@ -189,8 +189,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     onChange?.(data)
     setPsdDataJson(JSON.stringify(data, null, 2))
     // Do nothing if the data does not match the schema
-    renderPsd(psd, data, { canvas: canvas.current })
-  }, [psd])
+    renderPsd(loadedPsd, data, { canvas: canvas.current })
+  }, [loadedPsd])
 
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
 
@@ -275,10 +275,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Stack>
               <canvas
                 ref={canvas}
-                // @ts-expect-error psdSchema?.width
-                width={psdSchema?.width as number || 0}
-                // @ts-expect-error psdSchema?.height
-                height={psdSchema?.height as number || 0}
+                width={loadedPsd?.width || 0}
+                height={loadedPsd?.height || 0}
                 className="mh-100 mw-100"
               />
             </>

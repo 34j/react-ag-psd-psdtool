@@ -4,7 +4,6 @@
     "target": "ES2016",
     "jsx": "react-jsx",
     "lib": ["dom", "ESNext"],
-    "baseUrl": "src",
     "module": "CommonJS",
     "paths": {
       "*": ["./src/*"]
@@ -14,5 +13,5 @@
     "emitDeclarationOnly": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "test/**/*.ts", "test/**/*.tsx"]
 }
