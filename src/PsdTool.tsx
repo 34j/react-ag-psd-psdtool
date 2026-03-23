@@ -147,7 +147,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         setLoadingProgress(0)
         return
       }
-      setPsdData({})
       setLoadedPsd(null)
       const schema = getSchema(currentPsd)
       setLoadingProgress(80)
@@ -158,7 +157,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       setLoadingProgress(90)
       renderPsd(currentPsd, {}, { canvas: canvas.current })
       setLoadedPsd(currentPsd)
-      setPsdData({})
       setLoadingProgress(100)
     }
     finally {
