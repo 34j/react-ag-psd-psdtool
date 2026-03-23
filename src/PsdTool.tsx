@@ -18,18 +18,23 @@ import Row from 'react-bootstrap/esm/Row'
 import Form from 'react-bootstrap/Form'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
+import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
 import { BsCursor } from 'react-icons/bs'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
 
 const uiSchema: UiSchema = {
+  // Do not show the submit button
   'ui:submitButtonOptions': {
     norender: true,
   },
 }
 
+// https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
 function CustomCheckboxWidget(props: WidgetProps) {
+  // Only show the last part of the label after the last slash
+  // e.g. folderX/layerY -> layerY
   const lastName = (props.label || '').split('/').slice(-1)[0] || ''
   return <CheckboxWidget {...props} name={lastName} label={lastName} />
 }
@@ -109,13 +114,14 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [_url, _setUrl] = useState<string>(url || '')
   const [psdSchema, setPsdSchema] = useState<Record<string, unknown> | null>(null)
   const [psdSchemaJson, setPsdSchemaJson] = useState('')
-  const [_, setPsdData] = useState<Record<string, unknown> | null>(null)
+  const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const [psdDataJson, setPsdDataJson] = useState('')
   const canvas = useRef<HTMLCanvasElement>(null)
   const [psd, setPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
+  // Must be called when new PSD file is loaded
   const _onLoad = useCallback((buffer: ArrayBuffer) => {
     const currentPsd = readPsd(buffer)
     if (!currentPsd) {
@@ -126,11 +132,16 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     }
     setPsd(currentPsd)
     const schema = getSchema(currentPsd)
+    // Call onLoad callback (any user callback)
     onLoad?.(schema)
     setPsdSchema(schema)
     setPsdSchemaJson(JSON.stringify(schema, null, 2))
+    setPsdData({})
+    setPsdDataJson(JSON.stringify({}, null, 2))
+    renderPsd(currentPsd, {}, { canvas: canvas.current })
   }, [])
 
+  // Callback for file drop
   const _onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
@@ -156,6 +167,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     })
   }, [])
 
+  // Callback for form change
   const _onChange = useCallback((e: IChangeEvent<Record<string, unknown>, any, any>) => {
     if (!canvas.current) {
       return
@@ -163,6 +175,9 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     if (!psd) {
       return
     }
+    // To minimize the size of data,
+    // only include properties that are different from
+    // the default value in `psdSchema`
     const data: Record<string, any> = {}
     for (const key in e.formData) {
       // @ts-expect-error psdSchema?.properties
@@ -170,9 +185,10 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         data[key] = e.formData[key]
       }
     }
+    // Call onChange callback (any user callback)
     onChange?.(data)
-    setPsdData(data)
     setPsdDataJson(JSON.stringify(data, null, 2))
+    // Do nothing if the data does not match the schema
     renderPsd(psd, data, { canvas: canvas.current })
   }, [psd])
 
@@ -208,7 +224,22 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         <Row>
           <Col xs={2} className="vh-100">
             <div className="overflow-auto overflow-x-auto mh-100">
-              <RJSFForm schema={psdSchema || {}} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
+              <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
+
+                <div role="alert">
+
+                  <p>Something went wrong:</p>
+
+                  <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
+
+                  <button onClick={resetErrorBoundary}>Retry</button>
+
+                </div>
+
+              )}
+              >
+                <RJSFForm schema={psdSchema || {}} formData={psdData} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
+              </ErrorBoundary>
             </div>
           </Col>
           <Col className="vh-100">
