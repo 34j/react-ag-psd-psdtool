@@ -6,7 +6,7 @@ import { Form as RJSFForm } from '@rjsf/react-bootstrap'
 import CheckboxWidget from '@rjsf/react-bootstrap/lib/CheckboxWidget/CheckboxWidget.js'
 import FieldTemplate from '@rjsf/react-bootstrap/lib/FieldTemplate/FieldTemplate.js'
 import SelectWidget from '@rjsf/react-bootstrap/lib/SelectWidget/SelectWidget.js'
-import validator from '@rjsf/validator-ajv8'
+import { customizeValidator } from '@rjsf/validator-ajv8'
 import { readPsd } from 'ag-psd'
 import { getSchema, renderPsd } from 'ag-psd-psdtool'
 import React, { useCallback, useRef, useState } from 'react'
@@ -137,17 +137,20 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         setLoadingProgress(0)
         return
       }
-      setLoadedPsd(currentPsd)
+      setPsdData({})
+      setLoadedPsd(null)
       const schema = getSchema(currentPsd)
       setLoadingProgress(80)
       // Call onLoad callback (any user callback)
       onLoad?.(schema)
-      setPsdSchema(schema)
-      setPsdSchemaJson(JSON.stringify(schema, null, 2))
       setPsdData({})
       setPsdDataJson(JSON.stringify({}, null, 2))
+      setPsdSchema(schema)
+      setPsdSchemaJson(JSON.stringify(schema, null, 2))
       setLoadingProgress(90)
       renderPsd(currentPsd, {}, { canvas: canvas.current })
+      setLoadedPsd(currentPsd)
+      setPsdData({})
       setLoadingProgress(100)
     }
     finally {
@@ -262,7 +265,17 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
 
               )}
               >
-                <RJSFForm schema={psdSchema} formData={psdData} uiSchema={uiSchema} validator={validator} onChange={_onChange} widgets={widgets} templates={templates} />
+                <RJSFForm
+                  schema={psdSchema}
+                  formData={psdData}
+                  uiSchema={uiSchema}
+                  validator={validator}
+                  onChange={_onChange}
+                  widgets={widgets}
+                  templates={templates}
+                  validator={customizeValidator({ ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true }, extenderFn: ajv => ajv.addKeyword('$path') })}
+                  onChange={_onChange}
+                />
               </ErrorBoundary>
             </div>
           </Col>
