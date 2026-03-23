@@ -115,9 +115,19 @@ interface PsdToolProps {
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [_url, _setUrl] = useState<string>(url || '')
   const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
-  const [psdSchemaJson, setPsdSchemaJson] = useState('')
+  const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
   const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
-  const [psdDataJson, setPsdDataJson] = useState('')
+  const minimizedPsdData = React.useMemo(() => {
+    const formData = psdData ?? {}
+    const data: Record<string, unknown> = {}
+    for (const key in formData) {
+      if (formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
+        data[key] = formData[key]
+      }
+    }
+    return data
+  }, [psdData, psdSchema])
+  const psdDataJson = React.useMemo(() => JSON.stringify(minimizedPsdData, null, 2), [minimizedPsdData])
   const canvas = useRef<HTMLCanvasElement>(null)
   const [loadedPsd, setLoadedPsd] = useState<Psd | null>(null)
   const [showAlert, setShowAlert] = useState(false)
@@ -144,9 +154,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       // Call onLoad callback (any user callback)
       onLoad?.(schema)
       setPsdData({})
-      setPsdDataJson(JSON.stringify({}, null, 2))
       setPsdSchema(schema)
-      setPsdSchemaJson(JSON.stringify(schema, null, 2))
       setLoadingProgress(90)
       renderPsd(currentPsd, {}, { canvas: canvas.current })
       setLoadedPsd(currentPsd)
@@ -156,7 +164,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     finally {
       setTimeout(setLoadingProgress, 1000, 0)
     }
-  }, [])
+  }, [onLoad])
 
   // Callback for file drop
   const _onDrop = useCallback((acceptedFiles: File[]) => {
@@ -192,7 +200,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       }
       reader.readAsArrayBuffer(file)
     })
-  }, [])
+  }, [_onLoad])
 
   // Callback for form change
   const _onChange = useCallback((e: IChangeEvent<Record<string, unknown>, any, any>) => {
@@ -202,21 +210,13 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     if (!loadedPsd) {
       return
     }
-    // To minimize the size of data,
-    // only include properties that are different from
-    // the default value in `psdSchema`
-    const data: Record<string, any> = {}
-    for (const key in e.formData) {
-      if (e.formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
-        data[key] = e.formData[key]
-      }
-    }
+    const data = (e.formData ?? {}) as Record<string, string | boolean>
     // Call onChange callback (any user callback)
     onChange?.(data)
-    setPsdDataJson(JSON.stringify(data, null, 2))
+    setPsdData(data)
     // Do nothing if the data does not match the schema
-    renderPsd(loadedPsd, data, { canvas: canvas.current })
-  }, [loadedPsd])
+    renderPsd(loadedPsd, data as Record<string, string | boolean>, { canvas: canvas.current })
+  }, [loadedPsd, onChange])
 
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
 
@@ -239,7 +239,12 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         setAlertMessage(`Failed to fetch PSD file from ${_url}. Please make sure the URL is correct and the server allows CORS. ${error}`)
         setShowAlert(true)
       })
-  }, [_url])
+  }, [_url, _onLoad])
+
+  const rjsfValidator = customizeValidator({
+    ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
+    extenderFn: ajv => ajv.addKeyword('$path'),
+  })
 
   return (
     <>
@@ -269,11 +274,9 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                   schema={psdSchema}
                   formData={psdData}
                   uiSchema={uiSchema}
-                  validator={validator}
-                  onChange={_onChange}
                   widgets={widgets}
                   templates={templates}
-                  validator={customizeValidator({ ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true }, extenderFn: ajv => ajv.addKeyword('$path') })}
+                  validator={rjsfValidator}
                   onChange={_onChange}
                 />
               </ErrorBoundary>
