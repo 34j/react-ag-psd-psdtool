@@ -25,7 +25,7 @@ importers:
         version: 30.1.0
       ag-psd-psdtool:
         specifier: ^1.1.10
-        version: 1.1.10
+        version: 1.1.11
       bootstrap:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
@@ -922,8 +922,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ag-psd-psdtool@1.1.10:
-    resolution: {integrity: sha512-UgyFPtgToJImsCHl9szHMxqYR0VfPZm3b7TIrbrIk7GrNLaAARqjQvTptGVRMsm1WgTDUTJZwd3kOk83wEWnfg==}
+  ag-psd-psdtool@1.1.11:
+    resolution: {integrity: sha512-pXfAgVInI2d3qc510znGqOgB/hn7Aj5xRqTEc4EwH7Sq0zSDCVPdKgArF/Mr/vKPzaPWXcm7ltliKSctOMeV9A==}
 
   ag-psd@30.1.0:
     resolution: {integrity: sha512-1ce6o84aC+oVyl83A35HHUniGjwA3piHmGem3J2odBOFRq5p7i4htaco94vePLfOcingZu4fsyospJLwPagkhg==}
@@ -1696,8 +1696,8 @@ packages:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
 
-  get-tsconfig@4.13.6:
-    resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
+  get-tsconfig@4.13.7:
+    resolution: {integrity: sha512-7tN6rFgBlMgpBML5j8typ92BKFi2sFQvIdpAqLA2beia5avZDrMs0FLZiM5etShWq5irVyGcGMEA1jcDaK7A/Q==}
 
   git-log-parser@1.2.1:
     resolution: {integrity: sha512-PI+sPDvHXNPl5WNOErAK05s3j0lgwUzMN6o8cyQrDaKfT3qd7TmNJKeXX+SknI5I0QhG5fVPAEwSY4tRGDtYoQ==}
@@ -4353,7 +4353,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ag-psd-psdtool@1.1.10:
+  ag-psd-psdtool@1.1.11:
     dependencies:
       ag-psd: 30.1.0
       ajv: 8.18.0
@@ -4821,7 +4821,7 @@ snapshots:
       enhanced-resolve: 5.20.1
       eslint: 10.1.0
       eslint-plugin-es-x: 7.8.0(eslint@10.1.0)
-      get-tsconfig: 4.13.6
+      get-tsconfig: 4.13.7
       globals: 15.15.0
       globrex: 0.1.2
       ignore: 5.3.2
@@ -5155,7 +5155,7 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
-  get-tsconfig@4.13.6:
+  get-tsconfig@4.13.7:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
