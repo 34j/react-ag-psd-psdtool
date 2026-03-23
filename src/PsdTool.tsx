@@ -40,11 +40,22 @@ interface PsdToolProps {
 }
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
+  const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
+  const getPathPartsFromLabel = useCallback((label?: string) => {
+    const key = label || ''
+    const path = (psdSchema?.properties as any)?.[key]?.$path
+    if (Array.isArray(path) && path.length > 0) {
+      return path.map(String)
+    }
+    return key.split('/').filter(Boolean)
+  }, [psdSchema])
+
   // https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
   function CustomCheckboxWidget(props: WidgetProps) {
     // Only show the last part of the label after the last slash
     // e.g. folderX/layerY -> layerY
-    const lastName = (props.label || '').split('/').slice(-1)[0] || ''
+    const pathNames = getPathPartsFromLabel(props.label || '')
+    const lastName = pathNames.at(-1) || ''
     return <CheckboxWidget {...props} name={lastName} label={lastName} />
   }
 
@@ -66,7 +77,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     // Add a Checkbox on the left side
     // if `false` exists in `enumOptions`
     const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-    const lastName = (props.label || '').split('/').slice(-1)[0] || ''
+    const pathNames = getPathPartsFromLabel(props.label || '')
+    const lastName = pathNames.at(-1) || ''
     return (
       <Stack direction="horizontal" gap={1}>
         <CheckboxWidget
@@ -88,14 +100,15 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   }
 
   function CustomFieldTemplate(props: FieldTemplateProps) {
-    const slashCount = (props.id || '').split('/').length - 1
-    const lastName = (props.id || '').split('/').slice(-1)[0] || ''
+    const pathNames = getPathPartsFromLabel(props.label || '')
+    const level = pathNames.length - 1
+    const lastName = pathNames.at(-1) || ''
 
     // disable shrinking
     return (
       <>
         <Stack direction="horizontal" gap={0}>
-          <span style={{ visibility: 'hidden', display: 'block', width: `${slashCount * 1.5}em` }} className="flex-shrink-0" />
+          <span style={{ visibility: 'hidden', display: 'block', width: `${level * 1.5}em` }} className="flex-shrink-0" />
           <FieldTemplate {...props} label={lastName} />
         </Stack>
       </>
@@ -114,7 +127,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   }
 
   const [_url, _setUrl] = useState<string>(url || '')
-  const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
   const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
   const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const minimizedPsdData = React.useMemo(() => {
