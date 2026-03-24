@@ -9,7 +9,8 @@ import SelectWidget from '@rjsf/react-bootstrap/lib/SelectWidget/SelectWidget.js
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { readPsd } from 'ag-psd'
 import { getSchema, renderPsd } from 'ag-psd-psdtool'
-import React, { useCallback, useRef, useState } from 'react'
+import Ajv from 'ajv'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Stack } from 'react-bootstrap'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
@@ -18,93 +19,15 @@ import Badge from 'react-bootstrap/esm/Badge'
 import ProgressBar from 'react-bootstrap/esm/ProgressBar'
 import Row from 'react-bootstrap/esm/Row'
 import Form from 'react-bootstrap/Form'
-import { CodeBlock } from 'react-code-blocks'
+import { CopyBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
-import { BsCursor } from 'react-icons/bs'
+import { BsGithub } from 'react-icons/bs'
+import { SiNiconico, SiNpm, SiReadthedocs } from 'react-icons/si'
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
-
-const uiSchema: UiSchema = {
-  // Do not show the submit button
-  'ui:submitButtonOptions': {
-    norender: true,
-  },
-}
-
-// https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
-function CustomCheckboxWidget(props: WidgetProps) {
-  // Only show the last part of the label after the last slash
-  // e.g. folderX/layerY -> layerY
-  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
-  return <CheckboxWidget {...props} name={lastName} label={lastName} />
-}
-
-function CustomSelectWidget(props: WidgetProps) {
-  if (!props.options.enumOptions) {
-    return <SelectWidget {...props} />
-  }
-  let hasFalse = false
-  for (const option of props.options.enumOptions || []) {
-    if (option.value === false) {
-      hasFalse = true
-      break
-    }
-  }
-  if (!hasFalse) {
-    return <SelectWidget {...props} />
-  }
-
-  // Add a Checkbox on the left side
-  // if `false` exists in `enumOptions`
-  const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-  const lastName = (props.label || '').split('/').slice(-1)[0] || ''
-  return (
-    <Stack direction="horizontal" gap={1}>
-      <CheckboxWidget
-        {...props}
-        checked={props.value !== false}
-        label=""
-        onChange={(value) => {
-          if (value === false) {
-            props.onChange(false)
-          }
-          else if (enumOptions && enumOptions.length > 0) {
-            props.onChange(enumOptions[0]?.value)
-          }
-        }}
-      />
-      <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={props.value === false} />
-    </Stack>
-  )
-}
-
-function CustomFieldTemplate(props: FieldTemplateProps) {
-  const slashCount = (props.id || '').split('/').length - 1
-  const lastName = (props.id || '').split('/').slice(-1)[0] || ''
-
-  // disable shrinking
-  return (
-    <>
-      <Stack direction="horizontal" gap={0}>
-        <span style={{ visibility: 'hidden', display: 'block', width: `${slashCount * 1.5}em` }} className="flex-shrink-0" />
-        <FieldTemplate {...props} label={lastName} />
-      </Stack>
-    </>
-  )
-}
-
-// https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
-
-const widgets: RegistryWidgetsType = {
-  CheckboxWidget: CustomCheckboxWidget,
-  SelectWidget: CustomSelectWidget,
-}
-
-const templates = {
-  FieldTemplate: CustomFieldTemplate,
-}
 
 interface PsdToolProps {
   url?: string
@@ -113,15 +36,114 @@ interface PsdToolProps {
 }
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
-  const [_url, _setUrl] = useState<string>(url || '')
   const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
-  const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
   const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
+  const fullPsdData = React.useMemo(() => {
+    const schema = psdSchema
+    const data = structuredClone(psdData ?? {}) as Record<string, unknown>
+    const ajv = new Ajv({ useDefaults: true, removeAdditional: true, allowUnionTypes: true })
+    ajv.addKeyword('$path')
+    const validate = ajv.compile(schema)
+    validate(data)
+    return data
+  }, [psdSchema, psdData])
+  const psdSchemaPathNodes = useCallback((label?: string) => {
+    const key = label || ''
+    return psdSchema?.properties?.[key]?.$path || []
+  }, [psdSchema])
+  const uiSchema = React.useMemo((): UiSchema => {
+    const dynamicUiSchema: UiSchema = {
+      // Do not show the submit button
+      'ui:submitButtonOptions': {
+        norender: true,
+      },
+    }
+    for (const key in psdSchema.properties) {
+      const pathNames = psdSchemaPathNodes(key)
+      const lastName = pathNames.at(-1) || key
+      const hasHiddenAncestor = pathNames.slice(0, -1).some((_, index) => {
+        const ancestorName = pathNames.slice(0, index + 1).join('/')
+        return fullPsdData[ancestorName] === false
+      })
+      dynamicUiSchema[key] = {
+        'ui:title': lastName,
+        'ui:name': pathNames.join('/'),
+        ...(hasHiddenAncestor ? { 'ui:disabled': true } : {}),
+      }
+    }
+    return dynamicUiSchema
+  }, [psdSchema, psdSchemaPathNodes, fullPsdData])
+
+  function CustomSelectWidget(props: WidgetProps) {
+    if (!props.options.enumOptions) {
+      return <SelectWidget {...props} />
+    }
+    let hasFalse = false
+    for (const option of props.options.enumOptions || []) {
+      if (option.value === false) {
+        hasFalse = true
+        break
+      }
+    }
+    if (!hasFalse) {
+      return <SelectWidget {...props} />
+    }
+
+    // Add a Checkbox on the left side
+    // if `false` exists in `enumOptions`
+    const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
+    return (
+      <Stack direction="horizontal" gap={1}>
+        <CheckboxWidget
+          {...props}
+          checked={props.value !== false}
+          label=""
+          onChange={(value) => {
+            if (value === false) {
+              props.onChange(false)
+            }
+            else if (enumOptions && enumOptions.length > 0) {
+              props.onChange(enumOptions[0]?.value)
+            }
+          }}
+        />
+        <SelectWidget {...props} options={{ ...props.options, enumOptions }} disabled={props.disabled || props.value === false} />
+      </Stack>
+    )
+  }
+
+  function CustomFieldTemplate(props: FieldTemplateProps) {
+    const pathNames = psdSchemaPathNodes((props.uiSchema?.['ui:name'] as string | undefined) || '')
+    const level = pathNames.length - 1
+
+    // disable shrinking
+    return (
+      <>
+        <Stack direction="horizontal" gap={0}>
+          <span style={{ visibility: 'hidden', display: 'block', width: `${level * 1.5}em`, flexShrink: 0 }} />
+          <FieldTemplate {...props} />
+        </Stack>
+      </>
+    )
+  }
+
+  // https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
+
+  const widgets: RegistryWidgetsType = {
+    SelectWidget: CustomSelectWidget,
+  }
+
+  const templates = {
+    FieldTemplate: CustomFieldTemplate,
+  }
+
+  const [_url, _setUrl] = useState<string>(url || '')
+  const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
   const minimizedPsdData = React.useMemo(() => {
     const formData = psdData ?? {}
     const data: Record<string, unknown> = {}
     for (const key in formData) {
-      if (formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
+      if (formData[key] !== psdSchema?.properties?.[key]?.default) {
         data[key] = formData[key]
       }
     }
@@ -213,10 +235,55 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     onChange?.(data)
     setPsdData(data)
     // Do nothing if the data does not match the schema
-    renderPsd(loadedPsd, data as Record<string, string | boolean>, { canvas: canvas.current })
+    renderPsd(loadedPsd, data, { canvas: canvas.current })
   }, [loadedPsd, onChange])
 
-  const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
+  const baseStyle: React.CSSProperties = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#555555',
+    outline: 'none',
+    transition: 'border .24s ease-in-out',
+  }
+
+  const focusedStyle: React.CSSProperties = {
+    borderColor: '#2196f3',
+  }
+
+  const acceptStyle: React.CSSProperties = {
+    borderColor: '#00e676',
+  }
+
+  const rejectStyle: React.CSSProperties = {
+    borderColor: '#ff1744',
+  }
+
+  const {
+    getRootProps,
+    getInputProps,
+    isFocused,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
+
+  const style = useMemo<React.CSSProperties>(() => ({
+    ...baseStyle,
+    ...(isFocused ? focusedStyle : {}),
+    ...(isDragAccept ? acceptStyle : {}),
+    ...(isDragReject ? rejectStyle : {}),
+  }), [
+    isFocused,
+    isDragAccept,
+    isDragReject,
+  ])
 
   React.useEffect(() => {
     if (_url === '') {
@@ -243,99 +310,182 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
+  /*
+  1. Spacing
+    - g: Gutter (gap between columns)
+    - m: Margin (outside spacing)
+    - p: Padding (inside spacing)
+    - For nested flex items, use g-0 m-0 p-0 to remove spacing. Otherwise, use g-0 m-1 p-1 for a bit of spacing.
+  2. Height
+    - h-100 (height: 100%) must be used for vertically aligned columns
+    - min-h-0 must be used for nested flex items to prevent overflow issues.
+  3. Overflow
+    - Never use overflow-hidden. It does not address the root issue that the inner content is larger than the container. Try shrinking the content.
+    - For "scrollable" panels, using overflow-auto is fine.
+  */
+  const zeroSpacingClassName = 'g-0 m-0 p-0'
+  const panelSpacingClassName = 'g-0 m-1 p-1'
+  const fullHeightClassName = 'h-100'
+  const flexColumnG0MinH0ClassName = 'd-flex flex-column g-0 m-0 p-0 min-h-0 border-start'
+  const fullHeightFlexColumnClassName = `${flexColumnG0MinH0ClassName} ${fullHeightClassName}`
+  const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light m-0 p-1 g-0 flex-shrink-0'
+  const iconLinkClassName = 'd-inline-flex align-items-center gap-1'
 
   return (
-    <>
+    <Container fluid className={`h-dvh-100 d-flex flex-column ${zeroSpacingClassName}`}>
+      <Row className={`${panelHeaderClassName}`}>
+        <Col>
+          <Stack direction="horizontal" className="justify-content-between align-items-center">
+            <span className="fw-bold">PSDTool (ag-psd-psdtool)</span>
+            <Stack direction="horizontal" gap={3}>
+              {/* <small className="text-secondary opacity-75">PSDTool but built on React + Pure Typescript, powered by ag-psd and ag-psd-psdtool.</small> */}
+              <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                PSDTool (Original)
+              </a>
+              <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiNiconico size={16} />
+                {' '}
+                List of PSD files supporting advanced features
+                1
+              </a>
+              <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                2
+              </a>
+              <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <BsGithub size={16} />
+                GitHub
+              </a>
+              <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiReadthedocs size={16} />
+                Docs
+              </a>
+              <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiNpm size={16} />
+                npm
+              </a>
+            </Stack>
+          </Stack>
+        </Col>
+      </Row>
       <Alert key="danger" variant="danger" show={showAlert}>
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Container fluid className="vh-100">
-        <Row>
-          <Col xs={2} className="vh-100">
-            <div className="overflow-auto overflow-x-auto mh-100">
-              <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
-
-                <div role="alert">
-
-                  <p>Something went wrong:</p>
-
-                  <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
-
-                  <button onClick={resetErrorBoundary}>Retry</button>
-
-                </div>
-
-              )}
-              >
-                <RJSFForm
-                  schema={psdSchema}
-                  formData={psdData}
-                  uiSchema={uiSchema}
-                  widgets={widgets}
-                  templates={templates}
-                  validator={rjsfValidator}
-                  onChange={_onChange}
-                />
-              </ErrorBoundary>
-            </div>
-          </Col>
-          <Col className="vh-100">
-            <>
-              <div {...getRootProps()} className="object-fit-contain">
-                <input {...getInputProps()} />
-                <h2 className="text-center">
-                  Drag & Drop
-                  {' '}
-                  <Badge bg="secondary">.PSD</Badge>
-                </h2>
-                <p className="text-center">
-                  or
-                  {' '}
-                  <BsCursor />
-                  click to select
-                  {' '}
-                  <Badge bg="secondary">.PSD</Badge>
-                  {' '}
-                  file
-                </p>
+      <Row className={`${fullHeightClassName} flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+        <Col xs={3} className={`${fullHeightFlexColumnClassName} min-h-0`}>
+          <Row className={panelHeaderClassName}>
+            <Col className="fw-bold">Options</Col>
+          </Row>
+          <Row className={`overflow-auto flex-grow-1 ${panelSpacingClassName} min-h-0`}>
+            <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
+              <div role="alert">
+                <p>Something went wrong:</p>
+                <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
+                <button onClick={resetErrorBoundary}>Retry</button>
               </div>
-              <Stack direction="horizontal" gap={1} className="justify-content-center">
-                <p>or set URL</p>
-                <Form>
-                  <Form.Control
-                    type="url"
-                    placeholder="Enter URL"
-                    value={_url}
-                    onChange={e => _setUrl(e.target.value)}
-                  />
-                </Form>
-              </Stack>
-              <canvas
-                ref={canvas}
-                width={loadedPsd?.width || 0}
-                height={loadedPsd?.height || 0}
-                className="mh-100 mw-100"
+            )}
+            >
+              <RJSFForm
+                schema={psdSchema}
+                formData={psdData}
+                uiSchema={uiSchema}
+                widgets={widgets}
+                templates={templates}
+                validator={rjsfValidator}
+                onChange={_onChange}
               />
-            </>
-          </Col>
-          <Col xs={2} className="vh-100">
-            <Row style={{ height: '50%' }}>
-              <div className="overflow-auto mh-100">
-                <h2>PSD Schema</h2>
-                <CodeBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-              </div>
+            </ErrorBoundary>
+          </Row>
+        </Col>
+        <Col className={`${fullHeightFlexColumnClassName} flex-grow-1`}>
+          <Row className={`${zeroSpacingClassName}`}>
+            <div {...getRootProps({ style })}>
+              <input {...getInputProps()} />
+              <h2 className="text-center">
+                Select
+                {' '}
+                <Badge bg="secondary">.PSD</Badge>
+                {' '}
+                {/* file */}
+              </h2>
+              <p className="text-center">
+                or
+                {' '}
+                {/* <BsCursor /> */}
+                Drag & Drop
+                {' '}
+                <Badge bg="secondary">.PSD</Badge>
+                {' '}
+                {/* file */}
+              </p>
+            </div>
+            <Stack direction="horizontal" className="justify-content-center align-items-center">
+              <p className="text-center mb-0">
+                or set URL:
+                {' '}
+              </p>
+              <Form>
+                <Form.Control
+                  type="url"
+                  placeholder="Enter URL"
+                  value={_url}
+                  onChange={e => _setUrl(e.target.value)}
+                />
+              </Form>
+            </Stack>
+          </Row>
+          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+            <Col className={`${fullHeightFlexColumnClassName} min-h-0 h-100`}>
+              <Row className={`${panelHeaderClassName} flex-shrink-0`}>
+                <Col className="fw-bold">Canvas</Col>
+              </Row>
+              <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+                {/* overflow-hidden may be used only here! */}
+                <TransformWrapper
+                  minScale={0.1}
+                  maxScale={8}
+                  initialScale={1}
+                  wheel={{ step: 0.1 }}
+                  doubleClick={{ disabled: true }}
+                >
+                  <TransformComponent
+                  // Required to reduce the size of the TransformComponent
+                    wrapperStyle={{ width: '100%', height: '100%', minHeight: 0 }}
+                    contentStyle={{ width: '100%', height: '100%', minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <canvas
+                      ref={canvas}
+                      width={loadedPsd?.width || 0}
+                      height={loadedPsd?.height || 0}
+                      className="mh-100 mw-100"
+                    />
+                  </TransformComponent>
+                </TransformWrapper>
+              </Row>
+            </Col>
+
+          </Row>
+        </Col>
+        <Col xs={3} className={fullHeightFlexColumnClassName}>
+          <Row className={`${flexColumnG0MinH0ClassName} h-50 border-0`}>
+            <Row className={panelHeaderClassName}>
+              <Col className="fw-bold">Schema (JSON)</Col>
             </Row>
-            <Row style={{ height: '50%' }}>
-              <div className="overflow-auto mh-100">
-                <h2>Render Options</h2>
-                <CodeBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-              </div>
+            <Col className="overflow-auto min-h-0 m-1 p-1">
+              <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+            </Col>
+          </Row>
+          <Row className={`${flexColumnG0MinH0ClassName} h-50`}>
+            <Row className={panelHeaderClassName}>
+              <Col className="fw-bold">Options (JSON)</Col>
             </Row>
-          </Col>
-        </Row>
-      </Container>
-    </>
+            <Col className="overflow-auto min-h-0 m-1 p-1">
+              <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 

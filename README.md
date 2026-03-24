@@ -10,13 +10,13 @@
 
 ---
 
-**📘Documentation**: [https://34j.github.io/react-ag-psd-psdtool/](https://34j.github.io/react-ag-psd-psdtool/)
+**📘Documentation**: [https://34j.github.io/react-ag-psd-psdtool/docs/](https://34j.github.io/react-ag-psd-psdtool/docs/)
 
 **📦️NPM Package**: [https://www.npmjs.com/package/react-ag-psd-psdtool](https://www.npmjs.com/package/react-ag-psd-psdtool)
 
 ---
 
-PSDTool-like React Component (🔴LIVE Demo : https://34j.github.io/react-ag-psd-psdtool/)
+[PSDTool](https://oov.github.io/psdtool/)([kit](https://oov.github.io/aviutl_psdtoolkit/index.html))-like React Component built on top of [ag-psd-psdtool](https://github.com/34j/ag-psd-psdtool) (🔴LIVE Demo : [https://34j.github.io/react-ag-psd-psdtool/](https://34j.github.io/react-ag-psd-psdtool/))
 
 ## Installation
 
