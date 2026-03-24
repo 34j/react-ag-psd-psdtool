@@ -265,7 +265,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
-  const flexColumnG0ClassName = 'd-flex flex-column g-0 m-0 p-0'
+  const flexColumnG0MinH0ClassName = 'd-flex flex-column g-0 m-0 p-0 min-h-0 border-start'
   const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light m-0 p-1 g-0 flex-shrink-0'
   const iconLinkClassName = 'd-inline-flex align-items-center gap-1'
 
@@ -309,12 +309,12 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Row className="flex-grow-1 g-0 m-0 p-0">
-        <Col xs={3} className={flexColumnG0ClassName}>
+      <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0">
+        <Col xs={3} className={`${flexColumnG0MinH0ClassName} min-h-0`}>
           <Row className={panelHeaderClassName}>
             <Col className="fw-bold">Options</Col>
           </Row>
-          <Row className="overflow-auto-y flex-grow-1 g-0 m-1 p-1">
+          <Row className="overflow-auto flex-grow-1 g-0 m-1 p-1 min-h-0">
             <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
               <div role="alert">
                 <p>Something went wrong:</p>
@@ -335,8 +335,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </ErrorBoundary>
           </Row>
         </Col>
-        <Col className={`${flexColumnG0ClassName} flex-grow-1`}>
-          <Row className="overflow-auto-y g-0 m-1 p-1 flex-shrink-0">
+        <Col className={`${flexColumnG0MinH0ClassName} flex-grow-1`}>
+          <Row className="overflow-auto g-0 m-0 p-0 min-h-0 flex-shrink-0">
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               <h2 className="text-center">
@@ -367,44 +367,46 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className="flex-grow-1 g-0">
+          <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0 flex-column">
             <Row className={`${panelHeaderClassName} flex-shrink-0`}>
               <Col className="fw-bold">Canvas</Col>
             </Row>
-            <Row className="flex-grow-1 g-0 m-0 p-0">
-              <TransformWrapper
-                minScale={0.1}
-                maxScale={8}
-                initialScale={1}
-                wheel={{ step: 0.1 }}
-                doubleClick={{ disabled: true }}
-              >
-                <TransformComponent>
-                  <canvas
-                    ref={canvas}
-                    width={loadedPsd?.width || 0}
-                    height={loadedPsd?.height || 0}
-                    className="mh-100 mw-100"
-                  />
-                </TransformComponent>
-              </TransformWrapper>
+            <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0">
+              <Col className="m-1 p-1 min-h-0 overflow-auto">
+                <TransformWrapper
+                  minScale={0.1}
+                  maxScale={8}
+                  initialScale={1}
+                  wheel={{ step: 0.1 }}
+                  doubleClick={{ disabled: true }}
+                >
+                  <TransformComponent>
+                    <canvas
+                      ref={canvas}
+                      width={loadedPsd?.width || 0}
+                      height={loadedPsd?.height || 0}
+                      className="mh-100 mw-100"
+                    />
+                  </TransformComponent>
+                </TransformWrapper>
+              </Col>
             </Row>
           </Row>
         </Col>
-        <Col xs={3} className={`${flexColumnG0ClassName}`}>
-          <Row className={`${flexColumnG0ClassName} h-50`}>
+        <Col xs={3} className={`${flexColumnG0MinH0ClassName} border-0 !important`}>
+          <Row className={`${flexColumnG0MinH0ClassName} h-50 border-0`}>
             <Row className={panelHeaderClassName}>
               <Col className="fw-bold">PSD Schema</Col>
             </Row>
-            <Col className="overflow-auto-y">
+            <Col className="overflow-auto min-h-0 m-1 p-1">
               <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
             </Col>
           </Row>
-          <Row className={`${flexColumnG0ClassName} h-50`}>
+          <Row className={`${flexColumnG0MinH0ClassName} h-50`}>
             <Row className={panelHeaderClassName}>
               <Col className="fw-bold">Render Options</Col>
             </Row>
-            <Col className="overflow-auto-y">
+            <Col className="overflow-auto min-h-0 m-1 p-1">
               <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
             </Col>
           </Row>
