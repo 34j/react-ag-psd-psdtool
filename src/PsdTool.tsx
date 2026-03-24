@@ -19,7 +19,7 @@ import Badge from 'react-bootstrap/esm/Badge'
 import ProgressBar from 'react-bootstrap/esm/ProgressBar'
 import Row from 'react-bootstrap/esm/Row'
 import Form from 'react-bootstrap/Form'
-import { CodeBlock } from 'react-code-blocks'
+import { CopyBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
 import { BsCursor, BsGithub } from 'react-icons/bs'
@@ -271,6 +271,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         <Stack direction="horizontal" className="justify-content-between align-items-center">
           <strong>PSDTool (ag-psd-psdtool)</strong>
           <Stack direction="horizontal" gap={3}>
+            {/* <small className="text-secondary opacity-75">PSDTool but built on React + Pure Typescript, powered by ag-psd and ag-psd-psdtool.</small> */}
             <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
               PSDTool (Original)
             </a>
@@ -304,84 +305,108 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
       <Container fluid className="vh-100">
         <Row>
-          <Col xs={2} className="vh-100">
-            <div className="overflow-auto overflow-x-auto mh-100">
-              <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
+          <Col xs={3} className="vh-100">
+            <div className="d-flex flex-column h-100 px-0">
+              <div className="px-3 py-2 border-bottom bg-light">
+                <strong>Form</strong>
+              </div>
+              <div className="overflow-auto overflow-x-auto mh-100">
+                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
 
-                <div role="alert">
+                  <div role="alert">
 
-                  <p>Something went wrong:</p>
+                    <p>Something went wrong:</p>
 
-                  <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
+                    <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
 
-                  <button onClick={resetErrorBoundary}>Retry</button>
+                    <button onClick={resetErrorBoundary}>Retry</button>
 
-                </div>
+                  </div>
 
-              )}
-              >
-                <RJSFForm
-                  schema={psdSchema}
-                  formData={psdData}
-                  uiSchema={uiSchema}
-                  widgets={widgets}
-                  templates={templates}
-                  validator={rjsfValidator}
-                  onChange={_onChange}
-                />
-              </ErrorBoundary>
+                )}
+                >
+                  <RJSFForm
+                    schema={psdSchema}
+                    formData={psdData}
+                    uiSchema={uiSchema}
+                    widgets={widgets}
+                    templates={templates}
+                    validator={rjsfValidator}
+                    onChange={_onChange}
+                  />
+                </ErrorBoundary>
+              </div>
             </div>
           </Col>
-          <Col className="vh-100">
-            <>
-              <div {...getRootProps()} className="object-fit-contain">
-                <input {...getInputProps()} />
-                <h2 className="text-center">
-                  Drag & Drop
-                  {' '}
-                  <Badge bg="secondary">.PSD</Badge>
-                </h2>
-                <p className="text-center">
-                  or
-                  {' '}
-                  <BsCursor />
-                  click to select
-                  {' '}
-                  <Badge bg="secondary">.PSD</Badge>
-                  {' '}
-                  file
-                </p>
-              </div>
-              <Stack direction="horizontal" gap={1} className="justify-content-center">
-                <p>or set URL</p>
-                <Form>
-                  <Form.Control
-                    type="url"
-                    placeholder="Enter URL"
-                    value={_url}
-                    onChange={e => _setUrl(e.target.value)}
+          <Col className="vh-100 px-0 d-flex flex-column">
+            <Row className="gx-0">
+              <Col xs={12} className="overflow-auto">
+                <div {...getRootProps()} className="object-fit-contain">
+                  <input {...getInputProps()} />
+                  <h2 className="text-center">
+                    Drag & Drop
+                    {' '}
+                    <Badge bg="secondary">.PSD</Badge>
+                  </h2>
+                  <p className="text-center">
+                    or
+                    {' '}
+                    <BsCursor />
+                    click to select
+                    {' '}
+                    <Badge bg="secondary">.PSD</Badge>
+                    {' '}
+                    file
+                  </p>
+                </div>
+                <Stack direction="horizontal" gap={1} className="justify-content-center">
+                  <p>or set URL</p>
+                  <Form>
+                    <Form.Control
+                      type="url"
+                      placeholder="Enter URL"
+                      value={_url}
+                      onChange={e => _setUrl(e.target.value)}
+                    />
+                  </Form>
+                </Stack>
+              </Col>
+            </Row>
+            <Row className="gx-0 flex-grow-1">
+              <Col xs={12} className="d-flex flex-column px-0">
+                <div className="px-3 py-2 border-bottom bg-light">
+                  <strong>Canvas</strong>
+                </div>
+                <div className="overflow-auto h-100">
+                  <canvas
+                    ref={canvas}
+                    width={loadedPsd?.width || 0}
+                    height={loadedPsd?.height || 0}
+                    className="mh-100 mw-100"
                   />
-                </Form>
-              </Stack>
-              <canvas
-                ref={canvas}
-                width={loadedPsd?.width || 0}
-                height={loadedPsd?.height || 0}
-                className="mh-100 mw-100"
-              />
-            </>
+                </div>
+              </Col>
+            </Row>
           </Col>
-          <Col xs={2} className="vh-100">
+          <Col xs={3} className="vh-100">
             <Row style={{ height: '50%' }}>
-              <div className="overflow-auto mh-100">
-                <h2>PSD Schema</h2>
-                <CodeBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+              <div className="d-flex flex-column h-100 px-0">
+                <div className="px-3 py-2 border-bottom bg-light">
+                  <strong>PSD Schema</strong>
+                </div>
+                <div className="overflow-auto mh-100">
+                  <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+                </div>
               </div>
             </Row>
             <Row style={{ height: '50%' }}>
-              <div className="overflow-auto mh-100">
-                <h2>Render Options</h2>
-                <CodeBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+              <div className="d-flex flex-column h-100 px-0">
+                <div className="px-3 py-2 border-bottom bg-light">
+                  <strong>Render Options</strong>
+                </div>
+                <div className="overflow-auto mh-100">
+                  <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+                </div>
               </div>
             </Row>
           </Col>
