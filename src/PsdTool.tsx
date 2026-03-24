@@ -371,31 +371,34 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
-            <Row className={`${panelHeaderClassName} flex-shrink-0`}>
-              <Col className="fw-bold">Canvas</Col>
-            </Row>
-            <Row className={`${zeroSpacingClassName} min-h-0 mh-100 overflow-hidden `}>
-              {/* overflow-hidden may be used only here! */}
-              <Col className="m-1 p-1 min-h-0 h-100">
-                <TransformWrapper
-                  minScale={0.1}
-                  maxScale={8}
-                  initialScale={1}
-                  wheel={{ step: 0.1 }}
-                  doubleClick={{ disabled: true }}
-                >
-                  <TransformComponent>
-                    <canvas
-                      ref={canvas}
-                      width={loadedPsd?.width || 0}
-                      height={loadedPsd?.height || 0}
-                      className="mh-100 mw-100"
-                    />
-                  </TransformComponent>
-                </TransformWrapper>
-              </Col>
-            </Row>
+          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0 flex-column`}>
+            <Col className={`${zeroSpacingClassName} min-h-0 flex-grow-1`}>
+              <Row className={`${panelHeaderClassName} flex-shrink-0`}>
+                <Col className="fw-bold">Canvas</Col>
+              </Row>
+              <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+                {/* overflow-hidden may be used only here! */}
+                <Col className="m-1 p-1 min-h-0">
+                  <TransformWrapper
+                    minScale={0.1}
+                    maxScale={8}
+                    initialScale={1}
+                    wheel={{ step: 0.1 }}
+                    doubleClick={{ disabled: true }}
+                  >
+                    <TransformComponent>
+                      <canvas
+                        ref={canvas}
+                        width={loadedPsd?.width || 0}
+                        height={loadedPsd?.height || 0}
+                        className="mh-100 mw-100"
+                      />
+                    </TransformComponent>
+                  </TransformWrapper>
+                </Col>
+              </Row>
+            </Col>
+
           </Row>
         </Col>
         <Col xs={3} className={fullHeightFlexColumnClassName}>
