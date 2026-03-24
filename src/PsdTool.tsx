@@ -10,7 +10,7 @@ import { customizeValidator } from '@rjsf/validator-ajv8'
 import { readPsd } from 'ag-psd'
 import { getSchema, renderPsd } from 'ag-psd-psdtool'
 import Ajv from 'ajv'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Stack } from 'react-bootstrap'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
@@ -238,7 +238,52 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     renderPsd(loadedPsd, data, { canvas: canvas.current })
   }, [loadedPsd, onChange])
 
-  const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
+  const baseStyle = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#555555',
+    outline: 'none',
+    transition: 'border .24s ease-in-out',
+  }
+
+  const focusedStyle = {
+    borderColor: '#2196f3',
+  }
+
+  const acceptStyle = {
+    borderColor: '#00e676',
+  }
+
+  const rejectStyle = {
+    borderColor: '#ff1744',
+  }
+
+  const {
+    getRootProps,
+    getInputProps,
+    isFocused,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
+
+  const style = useMemo(() => ({
+    ...baseStyle,
+    ...(isFocused ? focusedStyle : {}),
+    ...(isDragAccept ? acceptStyle : {}),
+    ...(isDragReject ? rejectStyle : {}),
+  }), [
+    isFocused,
+    isDragAccept,
+    isDragReject,
+  ])
 
   React.useEffect(() => {
     if (_url === '') {
@@ -353,8 +398,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
           </Row>
         </Col>
         <Col className={`${fullHeightFlexColumnClassName} flex-grow-1`}>
-          <Row className={`overflow-auto ${zeroSpacingClassName} min-h-0 flex-shrink-1`}>
-            <div {...getRootProps()}>
+          <Row className={`${zeroSpacingClassName}`}>
+            <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
               <h2 className="text-center">
                 Drag & Drop
