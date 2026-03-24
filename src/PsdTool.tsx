@@ -267,7 +267,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   })
 
   return (
-    <>
+    <div className="vh-100 d-flex flex-column overflow-hidden">
       <div className="px-3 py-2 border-bottom bg-light">
         <Stack direction="horizontal" className="justify-content-between align-items-center">
           <strong>PSDTool (ag-psd-psdtool)</strong>
@@ -304,9 +304,9 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Container fluid className="vh-100">
-        <Row>
-          <Col xs={3} className="vh-100">
+      <Container fluid className="flex-grow-1 overflow-hidden">
+        <Row className="h-100">
+          <Col xs={3} className="h-100">
             <div className="d-flex flex-column h-100 px-0">
               <div className="px-3 py-2 border-bottom bg-light">
                 <strong>Form</strong>
@@ -339,7 +339,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </div>
             </div>
           </Col>
-          <Col className="vh-100 px-0 d-flex flex-column overflow-hidden" style={{ minHeight: 0 }}>
+          <Col className="h-100 px-0 d-flex flex-column overflow-hidden" style={{ minHeight: 0 }}>
             <Row className="gx-0">
               <Col xs={12} className="overflow-auto">
                 <div {...getRootProps()} className="object-fit-contain">
@@ -401,7 +401,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Col>
             </Row>
           </Col>
-          <Col xs={3} className="vh-100">
+          <Col xs={3} className="h-100 d-flex flex-column">
             <Row style={{ height: '50%' }}>
               <div className="d-flex flex-column h-100 px-0">
                 <div className="px-3 py-2 border-bottom bg-light">
@@ -425,7 +425,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
           </Col>
         </Row>
       </Container>
-    </>
+    </div>
   )
 }
 
