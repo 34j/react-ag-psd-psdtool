@@ -265,12 +265,16 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
+  const zeroSpacingClassName = 'g-0 m-0 p-0'
+  const panelSpacingClassName = 'g-0 m-1 p-1'
+  const fullHeightClassName = 'h-100'
   const flexColumnG0MinH0ClassName = 'd-flex flex-column g-0 m-0 p-0 min-h-0 border-start'
+  const fullHeightFlexColumnClassName = `${flexColumnG0MinH0ClassName} ${fullHeightClassName}`
   const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light m-0 p-1 g-0 flex-shrink-0'
   const iconLinkClassName = 'd-inline-flex align-items-center gap-1'
 
   return (
-    <Container fluid className="vh-100 d-flex flex-column g-0 m-0 p-0">
+    <Container fluid className={`h-dvh-100 d-flex flex-column ${zeroSpacingClassName}`}>
       <Row className={`${panelHeaderClassName}`}>
         <Col>
           <Stack direction="horizontal" className="justify-content-between align-items-center">
@@ -309,12 +313,12 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0">
-        <Col xs={3} className={`${flexColumnG0MinH0ClassName} min-h-0`}>
+      <Row className={`${fullHeightClassName} flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+        <Col xs={3} className={`${fullHeightFlexColumnClassName} min-h-0`}>
           <Row className={panelHeaderClassName}>
             <Col className="fw-bold">Options</Col>
           </Row>
-          <Row className="overflow-auto flex-grow-1 g-0 m-1 p-1 min-h-0">
+          <Row className={`overflow-auto flex-grow-1 ${panelSpacingClassName} min-h-0`}>
             <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
               <div role="alert">
                 <p>Something went wrong:</p>
@@ -335,8 +339,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </ErrorBoundary>
           </Row>
         </Col>
-        <Col className={`${flexColumnG0MinH0ClassName} flex-grow-1`}>
-          <Row className="overflow-auto g-0 m-0 p-0 min-h-0 flex-shrink-1">
+        <Col className={`${fullHeightFlexColumnClassName} flex-grow-1`}>
+          <Row className={`overflow-auto ${zeroSpacingClassName} min-h-0 flex-shrink-1`}>
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               <h2 className="text-center">
@@ -367,12 +371,13 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0 flex-column">
+          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0 flex-column`}>
             <Row className={`${panelHeaderClassName} flex-shrink-0`}>
               <Col className="fw-bold">Canvas</Col>
             </Row>
-            <Row className="flex-grow-1 g-0 m-0 p-0 min-h-0">
-              <Col className="m-1 p-1 min-h-0 overflow-auto">
+            <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+              {/* overflow-hidden may be used only here! */}
+              <Col className="m-1 p-1 min-h-0 overflow-hidden">
                 <TransformWrapper
                   minScale={0.1}
                   maxScale={8}
@@ -393,7 +398,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </Row>
           </Row>
         </Col>
-        <Col xs={3} className={`${flexColumnG0MinH0ClassName}`}>
+        <Col xs={3} className={fullHeightFlexColumnClassName}>
           <Row className={`${flexColumnG0MinH0ClassName} h-50 border-0`}>
             <Row className={panelHeaderClassName}>
               <Col className="fw-bold">PSD Schema</Col>
