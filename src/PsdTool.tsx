@@ -339,7 +339,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </div>
             </div>
           </Col>
-          <Col className="vh-100 px-0 d-flex flex-column">
+          <Col className="vh-100 px-0 d-flex flex-column overflow-hidden" style={{ minHeight: 0 }}>
             <Row className="gx-0">
               <Col xs={12} className="overflow-auto">
                 <div {...getRootProps()} className="object-fit-contain">
@@ -373,12 +373,12 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                 </Stack>
               </Col>
             </Row>
-            <Row className="gx-0 flex-grow-1">
-              <Col xs={12} className="d-flex flex-column px-0">
+            <Row className="gx-0 flex-grow-1 overflow-hidden" style={{ minHeight: 0 }}>
+              <Col xs={12} className="d-flex flex-column px-0 overflow-hidden" style={{ minHeight: 0 }}>
                 <div className="px-3 py-2 border-bottom bg-light">
                   <strong>Canvas</strong>
                 </div>
-                <div className="overflow-auto h-100">
+                <div className="overflow-hidden h-100" style={{ minHeight: 0 }}>
                   <TransformWrapper
                     minScale={0.1}
                     maxScale={8}
@@ -386,7 +386,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                     wheel={{ step: 0.1 }}
                     doubleClick={{ disabled: true }}
                   >
-                    <div className="h-100 w-100 d-flex align-items-center justify-content-center">
+                    <div className="h-100 w-100 d-flex align-items-center justify-content-center overflow-hidden" style={{ minHeight: 0 }}>
                       <TransformComponent>
                         <canvas
                           ref={canvas}
