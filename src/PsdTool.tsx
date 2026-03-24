@@ -27,13 +27,6 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
 
-const uiSchema: UiSchema = {
-  // Do not show the submit button
-  'ui:submitButtonOptions': {
-    norender: true,
-  },
-}
-
 interface PsdToolProps {
   url?: string
   onLoad?: (schema: PSDToolJSONSchema) => void
@@ -54,29 +47,30 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   }, [psdSchema, psdData])
   const psdSchemaPathNodes = useCallback((label?: string) => {
     const key = label || ''
-    const path = (psdSchema?.properties as any)?.[key]?.$path
-    if (Array.isArray(path) && path.length > 0) {
-      return path.map(String)
-    }
-    return key.split('/').filter(Boolean)
+    return psdSchema?.properties?.[key]?.$path || []
   }, [psdSchema])
-  const psdDataHasHiddenAncestor = useCallback((label?: string) => {
-    const pathNames = psdSchemaPathNodes(label)
-    return pathNames.slice(0, -1).some((_, index) => {
-      const ancestorName = pathNames.slice(0, index + 1).join('/')
-      return fullPsdData?.[ancestorName] === false
-    }) || false
-  }, [psdSchemaPathNodes, fullPsdData])
-
-  // https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
-  function CustomCheckboxWidget(props: WidgetProps) {
-    // Only show the last part of the label after the last slash
-    // e.g. folderX/layerY -> layerY
-    const pathNames = psdSchemaPathNodes(props.label || '')
-    const lastName = pathNames.at(-1) || ''
-    const disabled = props.disabled || psdDataHasHiddenAncestor(props.label || '')
-    return <CheckboxWidget {...props} name={lastName} label={lastName} disabled={disabled} />
-  }
+  const uiSchema = React.useMemo((): UiSchema => {
+    const dynamicUiSchema: UiSchema = {
+      // Do not show the submit button
+      'ui:submitButtonOptions': {
+        norender: true,
+      },
+    }
+    for (const key in psdSchema.properties) {
+      const pathNames = psdSchemaPathNodes(key)
+      const lastName = pathNames.at(-1) || key
+      const hasHiddenAncestor = pathNames.slice(0, -1).some((_, index) => {
+        const ancestorName = pathNames.slice(0, index + 1).join('/')
+        return fullPsdData[ancestorName] === false
+      })
+      dynamicUiSchema[key] = {
+        'ui:title': lastName,
+        'ui:name': pathNames.join('/'),
+        ...(hasHiddenAncestor ? { 'ui:disabled': true } : {}),
+      }
+    }
+    return dynamicUiSchema
+  }, [psdSchema, psdSchemaPathNodes, fullPsdData])
 
   function CustomSelectWidget(props: WidgetProps) {
     if (!props.options.enumOptions) {
@@ -96,14 +90,10 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     // Add a Checkbox on the left side
     // if `false` exists in `enumOptions`
     const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-    const pathNames = psdSchemaPathNodes(props.label || '')
-    const lastName = pathNames.at(-1) || ''
-    const disabled = props.disabled || psdDataHasHiddenAncestor(props.label || '')
     return (
       <Stack direction="horizontal" gap={1}>
         <CheckboxWidget
           {...props}
-          disabled={disabled}
           checked={props.value !== false}
           label=""
           onChange={(value) => {
@@ -115,22 +105,21 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             }
           }}
         />
-        <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={disabled || props.value === false} />
+        <SelectWidget {...props} options={{ ...props.options, enumOptions }} disabled={props.disabled || props.value === false} />
       </Stack>
     )
   }
 
   function CustomFieldTemplate(props: FieldTemplateProps) {
-    const pathNames = psdSchemaPathNodes(props.label || '')
+    const pathNames = psdSchemaPathNodes(props.uiSchema['ui:name'])
     const level = pathNames.length - 1
-    const lastName = pathNames.at(-1) || ''
 
     // disable shrinking
     return (
       <>
         <Stack direction="horizontal" gap={0}>
           <span style={{ visibility: 'hidden', display: 'block', width: `${level * 1.5}em` }} className="flex-shrink-0" />
-          <FieldTemplate {...props} label={lastName} />
+          <FieldTemplate {...props} />
         </Stack>
       </>
     )
@@ -139,7 +128,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   // https://github.com/rjsf-team/react-jsonschema-form/blob/a3a244c74f6727307fd52abd667c83dde3b2f0cb/packages/react-bootstrap/src/FieldTemplate/FieldTemplate.tsx#L63
 
   const widgets: RegistryWidgetsType = {
-    CheckboxWidget: CustomCheckboxWidget,
     SelectWidget: CustomSelectWidget,
   }
 
