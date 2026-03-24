@@ -265,6 +265,19 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
+  /*
+  1. Spacing
+    - g: Gutter (gap between columns)
+    - m: Margin (outside spacing)
+    - p: Padding (inside spacing)
+    - For nested flex items, use g-0 m-0 p-0 to remove spacing. Otherwise, use g-0 m-1 p-1 for a bit of spacing.
+  2. Height
+    - h-100 (height: 100%) must be used for vertically aligned columns
+    - min-h-0 must be used for nested flex items to prevent overflow issues.
+  3. Overflow
+    - Never use overflow-hidden. It does not address the root issue that the inner content is larger than the container. Try shrinking the content.
+    - For "scrollable" panels, using overflow-auto is fine.
+  */
   const zeroSpacingClassName = 'g-0 m-0 p-0'
   const panelSpacingClassName = 'g-0 m-1 p-1'
   const fullHeightClassName = 'h-100'
@@ -371,7 +384,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0 flex-column`}>
+          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
             <Col className={`${fullHeightFlexColumnClassName} min-h-0 h-100`}>
               <Row className={`${panelHeaderClassName} flex-shrink-0`}>
                 <Col className="fw-bold">Canvas</Col>
@@ -386,6 +399,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                   doubleClick={{ disabled: true }}
                 >
                   <TransformComponent
+                  // Required to reduce the size of the TransformComponent
                     wrapperStyle={{ width: '100%', height: '100%', minHeight: 0 }}
                     contentStyle={{ width: '100%', height: '100%', minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
