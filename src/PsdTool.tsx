@@ -133,7 +133,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     const formData = psdData ?? {}
     const data: Record<string, unknown> = {}
     for (const key in formData) {
-      if (formData[key] !== (psdSchema?.properties as any)?.[key]?.default) {
+      if (formData[key] !== psdSchema?.properties?.[key]?.default) {
         data[key] = formData[key]
       }
     }
@@ -225,7 +225,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     onChange?.(data)
     setPsdData(data)
     // Do nothing if the data does not match the schema
-    renderPsd(loadedPsd, data as Record<string, string | boolean>, { canvas: canvas.current })
+    renderPsd(loadedPsd, data, { canvas: canvas.current })
   }, [loadedPsd, onChange])
 
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
