@@ -9,6 +9,7 @@ import SelectWidget from '@rjsf/react-bootstrap/lib/SelectWidget/SelectWidget.js
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { readPsd } from 'ag-psd'
 import { getSchema, renderPsd } from 'ag-psd-psdtool'
+import Ajv from 'ajv'
 import React, { useCallback, useRef, useState } from 'react'
 import { Stack } from 'react-bootstrap'
 import Col from 'react-bootstrap/Col'
@@ -41,7 +42,17 @@ interface PsdToolProps {
 
 function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   const [psdSchema, setPsdSchema] = useState<PSDToolJSONSchema>({ type: 'object', properties: {}, title: undefined })
-  const getPathPartsFromLabel = useCallback((label?: string) => {
+  const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
+  const fullPsdData = React.useMemo(() => {
+    const schema = psdSchema
+    const data = structuredClone(psdData ?? {}) as Record<string, unknown>
+    const ajv = new Ajv({ useDefaults: true, removeAdditional: true, allowUnionTypes: true })
+    ajv.addKeyword('$path')
+    const validate = ajv.compile(schema)
+    validate(data)
+    return data
+  }, [psdSchema, psdData])
+  const psdSchemaPathNodes = useCallback((label?: string) => {
     const key = label || ''
     const path = (psdSchema?.properties as any)?.[key]?.$path
     if (Array.isArray(path) && path.length > 0) {
@@ -49,14 +60,22 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     }
     return key.split('/').filter(Boolean)
   }, [psdSchema])
+  const psdDataHasHiddenAncestor = useCallback((label?: string) => {
+    const pathNames = psdSchemaPathNodes(label)
+    return pathNames.slice(0, -1).some((_, index) => {
+      const ancestorName = pathNames.slice(0, index + 1).join('/')
+      return fullPsdData?.[ancestorName] === false
+    }) || false
+  }, [psdSchemaPathNodes, fullPsdData])
 
   // https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/react-bootstrap/src/CheckboxWidget/CheckboxWidget.tsx
   function CustomCheckboxWidget(props: WidgetProps) {
     // Only show the last part of the label after the last slash
     // e.g. folderX/layerY -> layerY
-    const pathNames = getPathPartsFromLabel(props.label || '')
+    const pathNames = psdSchemaPathNodes(props.label || '')
     const lastName = pathNames.at(-1) || ''
-    return <CheckboxWidget {...props} name={lastName} label={lastName} />
+    const disabled = props.disabled || psdDataHasHiddenAncestor(props.label || '')
+    return <CheckboxWidget {...props} name={lastName} label={lastName} disabled={disabled} />
   }
 
   function CustomSelectWidget(props: WidgetProps) {
@@ -77,12 +96,14 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     // Add a Checkbox on the left side
     // if `false` exists in `enumOptions`
     const enumOptions = props.options.enumOptions?.filter(option => option.value !== false)
-    const pathNames = getPathPartsFromLabel(props.label || '')
+    const pathNames = psdSchemaPathNodes(props.label || '')
     const lastName = pathNames.at(-1) || ''
+    const disabled = props.disabled || psdDataHasHiddenAncestor(props.label || '')
     return (
       <Stack direction="horizontal" gap={1}>
         <CheckboxWidget
           {...props}
+          disabled={disabled}
           checked={props.value !== false}
           label=""
           onChange={(value) => {
@@ -94,13 +115,13 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             }
           }}
         />
-        <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={props.value === false} />
+        <SelectWidget {...props} label={lastName} options={{ ...props.options, enumOptions }} disabled={disabled || props.value === false} />
       </Stack>
     )
   }
 
   function CustomFieldTemplate(props: FieldTemplateProps) {
-    const pathNames = getPathPartsFromLabel(props.label || '')
+    const pathNames = psdSchemaPathNodes(props.label || '')
     const level = pathNames.length - 1
     const lastName = pathNames.at(-1) || ''
 
@@ -128,7 +149,6 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
 
   const [_url, _setUrl] = useState<string>(url || '')
   const psdSchemaJson = React.useMemo(() => JSON.stringify(psdSchema, null, 2), [psdSchema])
-  const [psdData, setPsdData] = useState<Record<string, unknown> | null>(null)
   const minimizedPsdData = React.useMemo(() => {
     const formData = psdData ?? {}
     const data: Record<string, unknown> = {}

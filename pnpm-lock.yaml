@@ -26,6 +26,9 @@ importers:
       ag-psd-psdtool:
         specifier: ^1.1.12
         version: 1.1.12
+      ajv:
+        specifier: ^8.18.0
+        version: 8.18.0
       bootstrap:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
