@@ -265,53 +265,56 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
-  const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light'
+  const flexColumnG0ClassName = 'd-flex flex-column g-0 m-0 p-0'
+  const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light m-0 p-1 g-0 flex-shrink-0'
   const iconLinkClassName = 'd-inline-flex align-items-center gap-1'
 
   return (
-    <Container fluid className="vh-100 d-flex flex-column">
-      <header className={panelHeaderClassName}>
-        <Stack direction="horizontal" className="justify-content-between align-items-center">
-          <strong>PSDTool (ag-psd-psdtool)</strong>
-          <Stack direction="horizontal" gap={3}>
-            {/* <small className="text-secondary opacity-75">PSDTool but built on React + Pure Typescript, powered by ag-psd and ag-psd-psdtool.</small> */}
-            <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              PSDTool (Original)
-            </a>
-            <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              <SiNiconico size={16} />
-              {' '}
-              List of PSD files supporting advanced features
-              1
-            </a>
-            <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              2
-            </a>
-            <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              <BsGithub size={16} />
-              GitHub
-            </a>
-            <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              <SiReadthedocs size={16} />
-              Docs
-            </a>
-            <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
-              <SiNpm size={16} />
-              npm
-            </a>
+    <Container fluid className="vh-100 d-flex flex-column g-0 m-0 p-0">
+      <Row className={`${panelHeaderClassName}`}>
+        <Col>
+          <Stack direction="horizontal" className="justify-content-between align-items-center">
+            <span className="fw-bold">PSDTool (ag-psd-psdtool)</span>
+            <Stack direction="horizontal" gap={3}>
+              {/* <small className="text-secondary opacity-75">PSDTool but built on React + Pure Typescript, powered by ag-psd and ag-psd-psdtool.</small> */}
+              <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                PSDTool (Original)
+              </a>
+              <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiNiconico size={16} />
+                {' '}
+                List of PSD files supporting advanced features
+                1
+              </a>
+              <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                2
+              </a>
+              <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <BsGithub size={16} />
+                GitHub
+              </a>
+              <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiReadthedocs size={16} />
+                Docs
+              </a>
+              <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
+                <SiNpm size={16} />
+                npm
+              </a>
+            </Stack>
           </Stack>
-        </Stack>
-      </header>
+        </Col>
+      </Row>
       <Alert key="danger" variant="danger" show={showAlert}>
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Row className="flex-grow-1">
-        <Col xs={3} className="d-flex flex-column">
-          <header className={panelHeaderClassName}>
-            <strong>Form</strong>
-          </header>
-          <Row className="overflow-auto flex-grow-1 ">
+      <Row className="flex-grow-1 g-0 m-0 p-0">
+        <Col xs={3} className={flexColumnG0ClassName}>
+          <Row className={panelHeaderClassName}>
+            <Col className="fw-bold">Options</Col>
+          </Row>
+          <Row className="overflow-auto-y flex-grow-1 g-0 m-1 p-1">
             <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
               <div role="alert">
                 <p>Something went wrong:</p>
@@ -332,8 +335,8 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </ErrorBoundary>
           </Row>
         </Col>
-        <Col className="d-flex flex-column flex-grow-1">
-          <Row className="overflow-auto">
+        <Col className={`${flexColumnG0ClassName} flex-grow-1`}>
+          <Row className="overflow-auto-y g-0 m-1 p-1 flex-shrink-0">
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               <h2 className="text-center">
@@ -364,13 +367,11 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className="flex-grow-1">
-            <Row className="d-flex flex-column flex-shrink-0">
-              <header className={panelHeaderClassName}>
-                <strong>Canvas</strong>
-              </header>
+          <Row className="flex-grow-1 g-0">
+            <Row className={`${panelHeaderClassName} flex-shrink-0`}>
+              <Col className="fw-bold">Canvas</Col>
             </Row>
-            <Row className="flex-grow-1">
+            <Row className="flex-grow-1 g-0 m-0 p-0">
               <TransformWrapper
                 minScale={0.1}
                 maxScale={8}
@@ -390,22 +391,22 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </Row>
           </Row>
         </Col>
-        <Col xs={3} className="px-0">
-          <Row className="h-50 ">
-            <header className={panelHeaderClassName}>
-              <strong>PSD Schema</strong>
-            </header>
-            <div className="overflow-auto">
+        <Col xs={3} className={`${flexColumnG0ClassName}`}>
+          <Row className={`${flexColumnG0ClassName} h-50`}>
+            <Row className={panelHeaderClassName}>
+              <Col className="fw-bold">PSD Schema</Col>
+            </Row>
+            <Col className="overflow-auto-y">
               <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-            </div>
+            </Col>
           </Row>
-          <Row className="h-50 ">
-            <header className={panelHeaderClassName}>
-              <strong>Render Options</strong>
-            </header>
-            <div className="overflow-auto">
+          <Row className={`${flexColumnG0ClassName} h-50`}>
+            <Row className={panelHeaderClassName}>
+              <Col className="fw-bold">Render Options</Col>
+            </Row>
+            <Col className="overflow-auto-y">
               <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-            </div>
+            </Col>
           </Row>
         </Col>
       </Row>
