@@ -120,7 +120,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     return (
       <>
         <Stack direction="horizontal" gap={0}>
-          <span style={{ visibility: 'hidden', display: 'block', width: `${level * 1.5}em` }} className="flex-shrink-0" />
+          <span style={{ visibility: 'hidden', display: 'block', width: `${level * 1.5}em`, flexShrink: 0 }} />
           <FieldTemplate {...props} />
         </Stack>
       </>
@@ -265,167 +265,151 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     ajvOptionsOverrides: { allErrors: true, useDefaults: true, removeAdditional: true, allowUnionTypes: true },
     extenderFn: ajv => ajv.addKeyword('$path'),
   })
+  const panelHeaderClassName = 'px-3 py-2 border-bottom bg-light'
+  const iconLinkClassName = 'd-inline-flex align-items-center gap-1'
 
   return (
-    <div className="vh-100 d-flex flex-column overflow-hidden">
-      <div className="px-3 py-2 border-bottom bg-light">
+    <Container fluid className="vh-100 d-flex flex-column">
+      <header className={panelHeaderClassName}>
         <Stack direction="horizontal" className="justify-content-between align-items-center">
           <strong>PSDTool (ag-psd-psdtool)</strong>
           <Stack direction="horizontal" gap={3}>
             {/* <small className="text-secondary opacity-75">PSDTool but built on React + Pure Typescript, powered by ag-psd and ag-psd-psdtool.</small> */}
-            <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               PSDTool (Original)
             </a>
-            <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               <SiNiconico size={16} />
               {' '}
               List of PSD files supporting advanced features
               1
             </a>
-            <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               2
             </a>
-            <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               <BsGithub size={16} />
               GitHub
             </a>
-            <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               <SiReadthedocs size={16} />
               Docs
             </a>
-            <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+            <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className={iconLinkClassName}>
               <SiNpm size={16} />
               npm
             </a>
           </Stack>
         </Stack>
-      </div>
+      </header>
       <Alert key="danger" variant="danger" show={showAlert}>
         {alertMessage}
       </Alert>
       {loadingProgress > 0 && <ProgressBar animated striped now={loadingProgress} label={`Loading... ${loadingProgress}%`} />}
-      <Container fluid className="flex-grow-1 overflow-hidden">
-        <Row className="h-100">
-          <Col xs={3} className="h-100">
-            <div className="d-flex flex-column h-100 px-0">
-              <div className="px-3 py-2 border-bottom bg-light">
-                <strong>Form</strong>
+      <Row className="flex-grow-1">
+        <Col xs={3} className="d-flex flex-column">
+          <header className={panelHeaderClassName}>
+            <strong>Form</strong>
+          </header>
+          <Row className="overflow-auto flex-grow-1 ">
+            <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
+              <div role="alert">
+                <p>Something went wrong:</p>
+                <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
+                <button onClick={resetErrorBoundary}>Retry</button>
               </div>
-              <div className="overflow-auto overflow-x-auto mh-100">
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
-
-                  <div role="alert">
-
-                    <p>Something went wrong:</p>
-
-                    <pre style={{ color: 'red' }}>{getErrorMessage(error)}</pre>
-
-                    <button onClick={resetErrorBoundary}>Retry</button>
-
-                  </div>
-
-                )}
-                >
-                  <RJSFForm
-                    schema={psdSchema}
-                    formData={psdData}
-                    uiSchema={uiSchema}
-                    widgets={widgets}
-                    templates={templates}
-                    validator={rjsfValidator}
-                    onChange={_onChange}
-                  />
-                </ErrorBoundary>
-              </div>
+            )}
+            >
+              <RJSFForm
+                schema={psdSchema}
+                formData={psdData}
+                uiSchema={uiSchema}
+                widgets={widgets}
+                templates={templates}
+                validator={rjsfValidator}
+                onChange={_onChange}
+              />
+            </ErrorBoundary>
+          </Row>
+        </Col>
+        <Col className="d-flex flex-column flex-grow-1">
+          <Row className="overflow-auto">
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              <h2 className="text-center">
+                Drag & Drop
+                {' '}
+                <Badge bg="secondary">.PSD</Badge>
+              </h2>
+              <p className="text-center">
+                or
+                {' '}
+                <BsCursor />
+                click to select
+                {' '}
+                <Badge bg="secondary">.PSD</Badge>
+                {' '}
+                file
+              </p>
             </div>
-          </Col>
-          <Col className="h-100 px-0 d-flex flex-column overflow-hidden" style={{ minHeight: 0 }}>
-            <Row className="gx-0">
-              <Col xs={12} className="overflow-auto">
-                <div {...getRootProps()} className="object-fit-contain">
-                  <input {...getInputProps()} />
-                  <h2 className="text-center">
-                    Drag & Drop
-                    {' '}
-                    <Badge bg="secondary">.PSD</Badge>
-                  </h2>
-                  <p className="text-center">
-                    or
-                    {' '}
-                    <BsCursor />
-                    click to select
-                    {' '}
-                    <Badge bg="secondary">.PSD</Badge>
-                    {' '}
-                    file
-                  </p>
-                </div>
-                <Stack direction="horizontal" gap={1} className="justify-content-center">
-                  <p>or set URL</p>
-                  <Form>
-                    <Form.Control
-                      type="url"
-                      placeholder="Enter URL"
-                      value={_url}
-                      onChange={e => _setUrl(e.target.value)}
-                    />
-                  </Form>
-                </Stack>
-              </Col>
+            <Stack direction="horizontal" className="justify-content-center align-items-center">
+              <p>or set URL</p>
+              <Form>
+                <Form.Control
+                  type="url"
+                  placeholder="Enter URL"
+                  value={_url}
+                  onChange={e => _setUrl(e.target.value)}
+                />
+              </Form>
+            </Stack>
+          </Row>
+          <Row className="flex-grow-1">
+            <Row className="d-flex flex-column flex-shrink-0">
+              <header className={panelHeaderClassName}>
+                <strong>Canvas</strong>
+              </header>
             </Row>
-            <Row className="gx-0 flex-grow-1 overflow-hidden" style={{ minHeight: 0 }}>
-              <Col xs={12} className="d-flex flex-column px-0 overflow-hidden" style={{ minHeight: 0 }}>
-                <div className="px-3 py-2 border-bottom bg-light">
-                  <strong>Canvas</strong>
-                </div>
-                <div className="overflow-hidden h-100" style={{ minHeight: 0 }}>
-                  <TransformWrapper
-                    minScale={0.1}
-                    maxScale={8}
-                    initialScale={1}
-                    wheel={{ step: 0.1 }}
-                    doubleClick={{ disabled: true }}
-                  >
-                    <div className="h-100 w-100 d-flex align-items-center justify-content-center overflow-hidden" style={{ minHeight: 0 }}>
-                      <TransformComponent>
-                        <canvas
-                          ref={canvas}
-                          width={loadedPsd?.width || 0}
-                          height={loadedPsd?.height || 0}
-                          className="mh-100 mw-100"
-                        />
-                      </TransformComponent>
-                    </div>
-                  </TransformWrapper>
-                </div>
-              </Col>
+            <Row className="flex-grow-1">
+              <TransformWrapper
+                minScale={0.1}
+                maxScale={8}
+                initialScale={1}
+                wheel={{ step: 0.1 }}
+                doubleClick={{ disabled: true }}
+              >
+                <TransformComponent>
+                  <canvas
+                    ref={canvas}
+                    width={loadedPsd?.width || 0}
+                    height={loadedPsd?.height || 0}
+                    className="mh-100 mw-100"
+                  />
+                </TransformComponent>
+              </TransformWrapper>
             </Row>
-          </Col>
-          <Col xs={3} className="h-100 d-flex flex-column">
-            <Row style={{ height: '50%' }}>
-              <div className="d-flex flex-column h-100 px-0">
-                <div className="px-3 py-2 border-bottom bg-light">
-                  <strong>PSD Schema</strong>
-                </div>
-                <div className="overflow-auto mh-100">
-                  <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-                </div>
-              </div>
-            </Row>
-            <Row style={{ height: '50%' }}>
-              <div className="d-flex flex-column h-100 px-0">
-                <div className="px-3 py-2 border-bottom bg-light">
-                  <strong>Render Options</strong>
-                </div>
-                <div className="overflow-auto mh-100">
-                  <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
-                </div>
-              </div>
-            </Row>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+          </Row>
+        </Col>
+        <Col xs={3} className="px-0">
+          <Row className="h-50 ">
+            <header className={panelHeaderClassName}>
+              <strong>PSD Schema</strong>
+            </header>
+            <div className="overflow-auto">
+              <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+            </div>
+          </Row>
+          <Row className="h-50 ">
+            <header className={panelHeaderClassName}>
+              <strong>Render Options</strong>
+            </header>
+            <div className="overflow-auto">
+              <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
+            </div>
+          </Row>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
