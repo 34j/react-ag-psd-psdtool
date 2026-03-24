@@ -238,7 +238,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     renderPsd(loadedPsd, data, { canvas: canvas.current })
   }, [loadedPsd, onChange])
 
-  const baseStyle = {
+  const baseStyle: React.CSSProperties = {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
@@ -254,15 +254,15 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     transition: 'border .24s ease-in-out',
   }
 
-  const focusedStyle = {
+  const focusedStyle: React.CSSProperties = {
     borderColor: '#2196f3',
   }
 
-  const acceptStyle = {
+  const acceptStyle: React.CSSProperties = {
     borderColor: '#00e676',
   }
 
-  const rejectStyle = {
+  const rejectStyle: React.CSSProperties = {
     borderColor: '#ff1744',
   }
 
@@ -274,7 +274,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
     isDragReject,
   } = useDropzone({ accept: { 'image/psd': ['.psd'] }, multiple: false, onDrop: _onDrop })
 
-  const style = useMemo(() => ({
+  const style = useMemo<React.CSSProperties>(() => ({
     ...baseStyle,
     ...(isFocused ? focusedStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
