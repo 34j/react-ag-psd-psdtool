@@ -22,7 +22,8 @@ import Form from 'react-bootstrap/Form'
 import { CodeBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
-import { BsCursor } from 'react-icons/bs'
+import { BsCursor, BsGithub } from 'react-icons/bs'
+import { SiNiconico, SiNpm, SiReadthedocs } from 'react-icons/si'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -111,7 +112,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
   }
 
   function CustomFieldTemplate(props: FieldTemplateProps) {
-    const pathNames = psdSchemaPathNodes(props.uiSchema['ui:name'])
+    const pathNames = psdSchemaPathNodes((props.uiSchema?.['ui:name'] as string | undefined) || '')
     const level = pathNames.length - 1
 
     // disable shrinking
@@ -266,6 +267,37 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
 
   return (
     <>
+      <div className="px-3 py-2 border-bottom bg-light">
+        <Stack direction="horizontal" className="justify-content-between align-items-center">
+          <strong>PSDTool (ag-psd-psdtool)</strong>
+          <Stack direction="horizontal" gap={3}>
+            <a href="https://oov.github.io/psdtool/" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              PSDTool (Original)
+            </a>
+            <a href="http://seiga.nicovideo.jp/clip/1704637" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              <SiNiconico size={16} />
+              {' '}
+              List of PSD files supporting advanced features
+              1
+            </a>
+            <a href="https://seiga.nicovideo.jp/clip/1826158" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              2
+            </a>
+            <a href="https://github.com/34j/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              <BsGithub size={16} />
+              GitHub
+            </a>
+            <a href="https://34j.github.io/react-ag-psd-psdtool/docs/" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              <SiReadthedocs size={16} />
+              Docs
+            </a>
+            <a href="https://www.npmjs.com/package/react-ag-psd-psdtool" target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-1">
+              <SiNpm size={16} />
+              npm
+            </a>
+          </Stack>
+        </Stack>
+      </div>
       <Alert key="danger" variant="danger" show={showAlert}>
         {alertMessage}
       </Alert>
