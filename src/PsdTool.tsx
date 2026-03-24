@@ -372,30 +372,31 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </Stack>
           </Row>
           <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0 flex-column`}>
-            <Col className={`${zeroSpacingClassName} min-h-0 flex-grow-1`}>
+            <Col className={`${fullHeightFlexColumnClassName} min-h-0 h-100`}>
               <Row className={`${panelHeaderClassName} flex-shrink-0`}>
                 <Col className="fw-bold">Canvas</Col>
               </Row>
               <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
                 {/* overflow-hidden may be used only here! */}
-                <Col className="m-1 p-1 min-h-0">
-                  <TransformWrapper
-                    minScale={0.1}
-                    maxScale={8}
-                    initialScale={1}
-                    wheel={{ step: 0.1 }}
-                    doubleClick={{ disabled: true }}
+                <TransformWrapper
+                  minScale={0.1}
+                  maxScale={8}
+                  initialScale={1}
+                  wheel={{ step: 0.1 }}
+                  doubleClick={{ disabled: true }}
+                >
+                  <TransformComponent
+                    wrapperStyle={{ width: '100%', height: '100%', minHeight: 0 }}
+                    contentStyle={{ width: '100%', height: '100%', minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
-                    <TransformComponent>
-                      <canvas
-                        ref={canvas}
-                        width={loadedPsd?.width || 0}
-                        height={loadedPsd?.height || 0}
-                        className="mh-100 mw-100"
-                      />
-                    </TransformComponent>
-                  </TransformWrapper>
-                </Col>
+                    <canvas
+                      ref={canvas}
+                      width={loadedPsd?.width || 0}
+                      height={loadedPsd?.height || 0}
+                      className="mh-100 mw-100"
+                    />
+                  </TransformComponent>
+                </TransformWrapper>
               </Row>
             </Col>
 
