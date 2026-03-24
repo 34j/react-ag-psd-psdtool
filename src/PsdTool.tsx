@@ -419,7 +419,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
         <Col xs={3} className={fullHeightFlexColumnClassName}>
           <Row className={`${flexColumnG0MinH0ClassName} h-50 border-0`}>
             <Row className={panelHeaderClassName}>
-              <Col className="fw-bold">PSD Schema</Col>
+              <Col className="fw-bold">Schema (JSON)</Col>
             </Row>
             <Col className="overflow-auto min-h-0 m-1 p-1">
               <CopyBlock text={psdSchemaJson} language="json" showLineNumbers={false} wrapLongLines={true} />
@@ -427,7 +427,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
           </Row>
           <Row className={`${flexColumnG0MinH0ClassName} h-50`}>
             <Row className={panelHeaderClassName}>
-              <Col className="fw-bold">Render Options</Col>
+              <Col className="fw-bold">Options (JSON)</Col>
             </Row>
             <Col className="overflow-auto min-h-0 m-1 p-1">
               <CopyBlock text={psdDataJson} language="json" showLineNumbers={false} wrapLongLines={true} />
