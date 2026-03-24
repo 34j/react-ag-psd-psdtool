@@ -24,6 +24,7 @@ import { useDropzone } from 'react-dropzone'
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
 import { BsCursor, BsGithub } from 'react-icons/bs'
 import { SiNiconico, SiNpm, SiReadthedocs } from 'react-icons/si'
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -378,12 +379,24 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
                   <strong>Canvas</strong>
                 </div>
                 <div className="overflow-auto h-100">
-                  <canvas
-                    ref={canvas}
-                    width={loadedPsd?.width || 0}
-                    height={loadedPsd?.height || 0}
-                    className="mh-100 mw-100"
-                  />
+                  <TransformWrapper
+                    minScale={0.1}
+                    maxScale={8}
+                    initialScale={1}
+                    wheel={{ step: 0.1 }}
+                    doubleClick={{ disabled: true }}
+                  >
+                    <div className="h-100 w-100 d-flex align-items-center justify-content-center">
+                      <TransformComponent>
+                        <canvas
+                          ref={canvas}
+                          width={loadedPsd?.width || 0}
+                          height={loadedPsd?.height || 0}
+                          className="mh-100 mw-100"
+                        />
+                      </TransformComponent>
+                    </div>
+                  </TransformWrapper>
                 </div>
               </Col>
             </Row>
