@@ -371,13 +371,13 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
               </Form>
             </Stack>
           </Row>
-          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0 flex-column`}>
+          <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
             <Row className={`${panelHeaderClassName} flex-shrink-0`}>
               <Col className="fw-bold">Canvas</Col>
             </Row>
-            <Row className={`flex-grow-1 ${zeroSpacingClassName} min-h-0`}>
+            <Row className={`${zeroSpacingClassName} min-h-0 mh-100 overflow-hidden `}>
               {/* overflow-hidden may be used only here! */}
-              <Col className="m-1 p-1 min-h-0 overflow-hidden">
+              <Col className="m-1 p-1 min-h-0 h-100">
                 <TransformWrapper
                   minScale={0.1}
                   maxScale={8}
