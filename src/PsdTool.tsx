@@ -336,7 +336,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
           </Row>
         </Col>
         <Col className={`${flexColumnG0MinH0ClassName} flex-grow-1`}>
-          <Row className="overflow-auto g-0 m-0 p-0 min-h-0 flex-shrink-0">
+          <Row className="overflow-auto g-0 m-0 p-0 min-h-0 flex-shrink-1">
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               <h2 className="text-center">
@@ -393,7 +393,7 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             </Row>
           </Row>
         </Col>
-        <Col xs={3} className={`${flexColumnG0MinH0ClassName} border-0 !important`}>
+        <Col xs={3} className={`${flexColumnG0MinH0ClassName}`}>
           <Row className={`${flexColumnG0MinH0ClassName} h-50 border-0`}>
             <Row className={panelHeaderClassName}>
               <Col className="fw-bold">PSD Schema</Col>
