@@ -22,7 +22,7 @@ import Form from 'react-bootstrap/Form'
 import { CopyBlock } from 'react-code-blocks'
 import { useDropzone } from 'react-dropzone'
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary'
-import { BsCursor, BsGithub } from 'react-icons/bs'
+import { BsGithub } from 'react-icons/bs'
 import { SiNiconico, SiNpm, SiReadthedocs } from 'react-icons/si'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import 'bootstrap'
@@ -402,23 +402,28 @@ function PsdTool({ url, onLoad, onChange }: PsdToolProps) {
             <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
               <h2 className="text-center">
-                Drag & Drop
+                Select
                 {' '}
                 <Badge bg="secondary">.PSD</Badge>
+                {' '}
+                {/* file */}
               </h2>
               <p className="text-center">
                 or
                 {' '}
-                <BsCursor />
-                click to select
+                {/* <BsCursor /> */}
+                Drag & Drop
                 {' '}
                 <Badge bg="secondary">.PSD</Badge>
                 {' '}
-                file
+                {/* file */}
               </p>
             </div>
             <Stack direction="horizontal" className="justify-content-center align-items-center">
-              <p>or set URL</p>
+              <p className="text-center mb-0">
+                or set URL:
+                {' '}
+              </p>
               <Form>
                 <Form.Control
                   type="url"
