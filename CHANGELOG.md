@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/34j/react-ag-psd-psdtool/compare/v1.3.1...v1.3.2) (2026-04-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-zoom-pan-pinch to v4 ([#194](https://github.com/34j/react-ag-psd-psdtool/issues/194)) ([ff7a053](https://github.com/34j/react-ag-psd-psdtool/commit/ff7a053dcafd5c8e3f036aa76543d42a8fca076a))
+
 ## [1.3.1](https://github.com/34j/react-ag-psd-psdtool/compare/v1.3.0...v1.3.1) (2026-04-01)
 
 
