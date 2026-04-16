@@ -58,8 +58,8 @@ importers:
         version: 4.0.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@antfu/eslint-config':
-        specifier: 8.1.1
-        version: 8.1.1(@typescript-eslint/rule-tester@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@typescript-eslint/typescript-estree@8.58.1(typescript@6.0.2))(@typescript-eslint/utils@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@vue/compiler-sfc@3.5.32)(eslint@10.2.0)(typescript@6.0.2)(vitest@4.1.4)
+        specifier: 8.2.0
+        version: 8.2.0(@typescript-eslint/rule-tester@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@typescript-eslint/typescript-estree@8.58.1(typescript@6.0.2))(@typescript-eslint/utils@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@vue/compiler-sfc@3.5.32)(eslint@10.2.0)(typescript@6.0.2)(vitest@4.1.4)
       '@semantic-release/changelog':
         specifier: 6.0.3
         version: 6.0.3(semantic-release@25.0.3(typescript@6.0.2))
@@ -132,8 +132,8 @@ packages:
   '@actions/io@3.0.2':
     resolution: {integrity: sha512-nRBchcMM+QK1pdjO7/idu86rbJI5YHUKCvKs0KxnSYbVe3F51UfGxuZX4Qy/fWlp6l7gWFwIkrOzN+oUK03kfw==}
 
-  '@antfu/eslint-config@8.1.1':
-    resolution: {integrity: sha512-y5/eAKlJUbQpeES2Pnb0i/VgbmqQ+srHJJNqbTKEBsxdLy3h1BqdS00zDpE+YeP71EWmlYJSTUhcJg4n4yMeAQ==}
+  '@antfu/eslint-config@8.2.0':
+    resolution: {integrity: sha512-spfwYXMNrlkl69riTSBnbC0C2K8EVfVMOK3ceP2EpAAioyfprIW1gTwyLRtd9jZSFeNdX4mFNAIG+o0sOneOfA==}
     hasBin: true
     peerDependencies:
       '@angular-eslint/eslint-plugin': ^21.1.0
@@ -3489,7 +3489,7 @@ snapshots:
 
   '@actions/io@3.0.2': {}
 
-  '@antfu/eslint-config@8.1.1(@typescript-eslint/rule-tester@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@typescript-eslint/typescript-estree@8.58.1(typescript@6.0.2))(@typescript-eslint/utils@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@vue/compiler-sfc@3.5.32)(eslint@10.2.0)(typescript@6.0.2)(vitest@4.1.4)':
+  '@antfu/eslint-config@8.2.0(@typescript-eslint/rule-tester@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@typescript-eslint/typescript-estree@8.58.1(typescript@6.0.2))(@typescript-eslint/utils@8.58.1(eslint@10.2.0)(typescript@6.0.2))(@vue/compiler-sfc@3.5.32)(eslint@10.2.0)(typescript@6.0.2)(vitest@4.1.4)':
     dependencies:
       '@antfu/install-pkg': 1.1.0
       '@clack/prompts': 1.2.0
